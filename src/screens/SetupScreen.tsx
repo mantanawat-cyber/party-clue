@@ -12,28 +12,10 @@ const defaultQuestionSet = (() => {
 export default function SetupScreen() {
   const { state, dispatch } = useGame();
   const [name, setName] = useState(state.myName ?? '');
-  const [questionSet, setQuestionSet] = useState<QuestionSet | null>(defaultQuestionSet);
+  const [questionSet] = useState<QuestionSet | null>(defaultQuestionSet);
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  function handleLoadFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        const raw = JSON.parse(ev.target?.result as string);
-        const qs = validateQuestionSet(raw);
-        setQuestionSet(qs);
-        setSelectedQuestion(null);
-        setError(null);
-      } catch (err) {
-        setError(`ไฟล์ไม่ถูกต้อง: ${err}`);
-      }
-    };
-    reader.readAsText(file);
-  }
 
   async function handleCreate() {
     const trimmedName = name.trim();
@@ -77,12 +59,6 @@ export default function SetupScreen() {
             />
           </div>
           <div className="section-title">Question Set</div>
-          <div style={{ marginBottom: 8 }}>
-            <label className="btn btn--ghost" style={{ cursor: 'pointer', fontSize: '0.85rem' }}>
-              📁 ใช้ไฟล์ JSON อื่น
-              <input type="file" accept=".json" style={{ display: 'none' }} onChange={handleLoadFile} />
-            </label>
-          </div>
 
           {questionSet && (
             <>
