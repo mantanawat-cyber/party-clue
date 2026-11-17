@@ -9,9 +9,9 @@ const DEFAULT_SETTINGS: GameSettings = {
   maxPlayers: 8,
 };
 
-export function createPlayers(names: string[]): Player[] {
-  return names.map((name) => ({
-    id: uuidv4(),
+export function createPlayers(players: { id?: string; name: string }[]): Player[] {
+  return players.map(({ id, name }) => ({
+    id: id ?? uuidv4(),
     name,
     clueHand: [],
     actionHand: [],
@@ -21,11 +21,11 @@ export function createPlayers(names: string[]): Player[] {
 
 export function setupGame(
   roomId: string,
-  playerNames: string[],
+  playerDefs: { id?: string; name: string }[],
   question: Question,
   settings: Partial<GameSettings> = {}
 ): GameState {
-  const players = createPlayers(playerNames);
+  const players = createPlayers(playerDefs);
   let clueDeck = shuffle(buildClueDeck(question));
   let actionDeck = buildActionDeck();
 

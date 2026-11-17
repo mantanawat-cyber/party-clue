@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useGame } from '../store/GameContext';
-import { findRoomByCode, fetchGameState } from '../firebase/room';
+import { findRoomByCode, joinLobby, getOrCreatePlayerId } from '../firebase/room';
 
 export default function JoinScreen() {
-  const { dispatch } = useGame();
+  const { state, dispatch } = useGame();
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -16,12 +16,10 @@ export default function JoinScreen() {
     try {
       const roomId = await findRoomByCode(trimmed);
       if (!roomId) { setError('ไม่พบห้องนี้'); setLoading(false); return; }
-      const gs = await fetchGameState(roomId);
-      if (!gs) { setError('ห้องยังไม่เริ่ม'); setLoading(false); return; }
 
-      dispatch({ type: 'ROOM_CREATED', roomId, roomCode: trimmed });
-      dispatch({ type: 'FIREBASE_SYNC', gameState: gs });
-      dispatch({ type: 'GO_CLAIM' });
+      const playerId = getOrCreatePlayerId();
+      await joinLobby(roomId, playerId, state.myName ?? 'Player', false);
+      dispatch({ type: 'GO_LOBBY', roomId, roomCode: trimmed, playerId, isHost: false });
     } catch {
       setError('เกิดข้อผิดพลาด ลองใหม่');
     }
@@ -33,7 +31,9 @@ export default function JoinScreen() {
       <div className="container" style={{ maxWidth: 400 }}>
         <div className="panel">
           <h2 style={{ marginBottom: 4 }}>🔑 เข้าร่วมห้อง</h2>
-          <p className="text-muted text-sm" style={{ marginBottom: 20 }}>ขอ Room Code จาก Host</p>
+          <p className="text-muted text-sm" style={{ marginBottom: 20 }}>
+            สวัสดี <strong>{state.myName}</strong> — กรอก Room Code จาก Host
+          </p>
 
           <div className="field">
             <label>Room Code (4 ตัวเลข)</label>

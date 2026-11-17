@@ -140,6 +140,12 @@ export interface GameSettings {
   maxPlayers: number;
 }
 
+export interface LobbyPlayer {
+  id: string;
+  name: string;
+  isHost: boolean;
+}
+
 // ─── Room (Firebase top-level) ─────────────────────────────────────────────
 
 export interface RoomMeta {

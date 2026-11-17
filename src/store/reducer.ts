@@ -1,4 +1,4 @@
-import type { GameState, Player, Question } from '../models';
+import type { GameState, LobbyPlayer, Player, Question } from '../models';
 import {
   setupGame,
   drawActionPhase,
@@ -20,19 +20,23 @@ import {
 // ─── App UI State ────────────────────────────────────────────────────────────
 
 export type Screen =
-  | 'home'       // create or join room
-  | 'setup'      // host: set up player names + question
-  | 'claim'      // pick which player you are (host + joiner)
+  | 'home'       // enter name, choose create or join
+  | 'setup'      // host: pick question
   | 'join'       // enter room code
+  | 'lobby'      // waiting room (all players)
+  | 'claim'      // legacy fallback
   | 'board'      // public game board
   | 'hand'       // private hand
   | 'gameover';
 
 export interface AppState {
   screen: Screen;
+  myName: string | null;
+  myPlayerId: string | null;
+  lobbyPlayers: LobbyPlayer[];
+  selectedQuestion: Question | null;
   gameState: GameState | null;
-  myPlayerId: string | null;      // which player this device is
-  currentPlayer: Player | null;   // legacy fallback for single-device
+  currentPlayer: Player | null;
   roomId: string | null;
   roomCode: string | null;
   isHost: boolean;
@@ -44,8 +48,11 @@ export interface AppState {
 
 export const INITIAL_STATE: AppState = {
   screen: 'home',
-  gameState: null,
+  myName: null,
   myPlayerId: null,
+  lobbyPlayers: [],
+  selectedQuestion: null,
+  gameState: null,
   currentPlayer: null,
   roomId: null,
   roomCode: null,
@@ -59,10 +66,13 @@ export const INITIAL_STATE: AppState = {
 // ─── Dispatch Actions ────────────────────────────────────────────────────────
 
 export type AppAction =
+  | { type: 'SET_MY_NAME'; name: string }
   | { type: 'GO_SETUP' }
   | { type: 'GO_JOIN' }
   | { type: 'GO_HOME' }
   | { type: 'GO_CLAIM' }
+  | { type: 'GO_LOBBY'; roomId: string; roomCode: string; playerId: string; isHost: boolean; question?: Question }
+  | { type: 'LOBBY_SYNC'; players: LobbyPlayer[] }
   | { type: 'INIT_GAME'; playerNames: string[]; question: Question; roomId: string }
   | { type: 'START_GAME'; gameState: GameState; roomId: string; roomCode: string }
   | { type: 'ROOM_CREATED'; roomId: string; roomCode: string }
@@ -97,6 +107,9 @@ function actorId(state: AppState): string | null {
 export function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
 
+    case 'SET_MY_NAME':
+      return { ...state, myName: action.name };
+
     case 'GO_SETUP':
       return { ...state, screen: 'setup', isHost: true };
 
@@ -106,11 +119,25 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     case 'GO_CLAIM':
       return { ...state, screen: 'claim' };
 
+    case 'GO_LOBBY':
+      return {
+        ...state,
+        screen: 'lobby',
+        roomId: action.roomId,
+        roomCode: action.roomCode,
+        myPlayerId: action.playerId,
+        isHost: action.isHost,
+        selectedQuestion: action.question ?? state.selectedQuestion,
+      };
+
+    case 'LOBBY_SYNC':
+      return { ...state, lobbyPlayers: action.players };
+
     case 'GO_HOME':
-      return { ...INITIAL_STATE };
+      return { ...INITIAL_STATE, myName: state.myName };
 
     case 'INIT_GAME': {
-      const gs = setupGame(action.roomId, action.playerNames, action.question);
+      const gs = setupGame(action.roomId, action.playerNames.map(name => ({ name })), action.question);
       return { ...state, gameState: gs, screen: 'claim', currentPlayer: null };
     }
 
@@ -146,10 +173,13 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     }
 
     case 'FIREBASE_SYNC': {
-      // Update game state from Firebase — do not write back
       const gs = action.gameState;
       if (gs.gamePhase === 'gameover') {
         return { ...state, gameState: gs, screen: 'gameover', spyReveal: null, guessPhase: 'idle', hostJudgePending: null };
+      }
+      // Auto-transition from lobby to board when host starts the game
+      if (state.screen === 'lobby' && gs.gamePhase === 'playing') {
+        return { ...state, gameState: gs, screen: 'board' };
       }
       return { ...state, gameState: gs };
     }

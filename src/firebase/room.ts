@@ -1,6 +1,6 @@
 import { ref, set, get, onValue, off, push, update } from 'firebase/database';
 import { db } from './config';
-import type { GameState } from '../models';
+import type { GameState, LobbyPlayer } from '../models';
 
 const BASE = 'party-clue';
 
@@ -84,4 +84,26 @@ export function listenToGameState(
 // Mark room as finished
 export async function closeRoom(roomId: string): Promise<void> {
   await update(metaRef(roomId), { phase: 'gameover' });
+}
+
+// Join the room lobby
+export async function joinLobby(roomId: string, playerId: string, name: string, isHost: boolean): Promise<void> {
+  await set(ref(db, `${BASE}/rooms/${roomId}/lobby/${playerId}`), { name, isHost });
+}
+
+// Listen to lobby player list
+export function listenToLobby(
+  roomId: string,
+  onUpdate: (players: LobbyPlayer[]) => void,
+): () => void {
+  const r = ref(db, `${BASE}/rooms/${roomId}/lobby`);
+  onValue(r, (snap) => {
+    if (!snap.exists()) { onUpdate([]); return; }
+    const data = snap.val() as Record<string, { name: string; isHost: boolean }>;
+    const players: LobbyPlayer[] = Object.entries(data).map(([id, v]) => ({
+      id, name: v.name, isHost: v.isHost,
+    }));
+    onUpdate(players);
+  });
+  return () => off(r);
 }

@@ -10,8 +10,8 @@ const questionSet = validateQuestionSet(sampleData);
 const question = questionSet.questions[0];
 
 function makeGame(playerCount = 3) {
-  const names = Array.from({ length: playerCount }, (_, i) => `Player${i + 1}`);
-  return setupGame('room-test', names, question);
+  const players = Array.from({ length: playerCount }, (_, i) => ({ name: `Player${i + 1}` }));
+  return setupGame('room-test', players, question);
 }
 
 // ─── Setup ──────────────────────────────────────────────────────────────────
