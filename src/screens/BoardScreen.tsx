@@ -46,9 +46,26 @@ export default function BoardScreen() {
               #{state.roomCode}
             </span>
           )}
-          <span className="board-deck-count">
-            Clue: {gs.clueDeck.length} | Action: {gs.actionDeck.length}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {/* Clue Deck */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <div style={{ position: 'relative', width: 28, height: 38 }}>
+                <img src="/cards/card-back.png" alt="Clue Deck" style={{ width: '100%', height: '100%', objectFit: 'fill', borderRadius: 3 }} />
+                <span style={{
+                  position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '0.72rem', fontWeight: 800, color: '#fff',
+                  textShadow: '0 1px 3px rgba(0,0,0,0.9)',
+                }}>
+                  {gs.clueDeck.length}
+                </span>
+              </div>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>เบาะแส</span>
+            </div>
+            {/* Action Deck */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>⚡{gs.actionDeck.length}</span>
+            </div>
+          </div>
         </div>
       </div>
 
