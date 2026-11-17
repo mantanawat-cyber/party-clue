@@ -131,10 +131,16 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     }
 
     case 'CLAIM_PLAYER': {
+      const gs = state.gameState;
+      const updatedGs = gs ? {
+        ...gs,
+        claimedPlayerIds: [...(gs.claimedPlayerIds ?? []), action.playerId],
+      } : gs;
       return {
         ...state,
         myPlayerId: action.playerId,
-        currentPlayer: state.gameState?.players.find(p => p.id === action.playerId) ?? null,
+        currentPlayer: gs?.players.find(p => p.id === action.playerId) ?? null,
+        gameState: updatedGs,
         screen: 'board',
       };
     }

@@ -7,6 +7,7 @@ import type { GameState } from '../models';
 // OPEN_HAND is included because it may auto-draw an action card
 // START_GAME is excluded — SetupScreen already writes to Firebase before dispatching
 const FIREBASE_WRITE_ACTIONS = new Set([
+  'CLAIM_PLAYER',
   'OPEN_HAND',
   'DRAW_ACTION', 'PLAY_ACTION', 'SET_TARGET', 'SELECT_CLUE',
   'SKIP_SHUTDOWN', 'USE_SHUTDOWN', 'APPLY_DISCARD_CHOICE', 'KEEP_INVESTIGATE',

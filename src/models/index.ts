@@ -118,6 +118,7 @@ export interface GameState {
   roomId: string;
   gamePhase: GamePhase;
   players: Player[];
+  claimedPlayerIds: string[];
   currentPlayerIndex: number;
   turnPhase: TurnPhase;
   turnNumber: number;

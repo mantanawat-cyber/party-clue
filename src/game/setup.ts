@@ -61,6 +61,7 @@ export function setupGame(
   return {
     roomId,
     gamePhase: 'playing',
+    claimedPlayerIds: [],
     players,
     currentPlayerIndex: startIndex,
     turnPhase: 'draw',
