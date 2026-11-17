@@ -1,36 +1,96 @@
 {
   "schemaVersion": 1,
-  "id": "sample-set",
-  "name": "Sample Set (ทดสอบระบบ)",
+  "id": "anime-set-01",
+  "name": "ทายตัวละครอนิเมะ Vol.1",
   "questions": [
     {
-      "id": "q-sample-001",
-      "answer": "ตัวละคร A",
-      "acceptedAnswers": ["ตัวละคร A", "Character A"],
-      "category": "sample",
+      "id": "q-anime-001",
+      "answer": "นารูโตะ อุซุมากิ",
+      "acceptedAnswers": ["นารูโตะ", "naruto", "นารูโตะ อุซุมากิ", "uzumaki naruto"],
+      "category": "Naruto",
       "clues": [
-        { "id": "q-sample-001-c01", "type": "normal", "content": "เบาะแสที่ 1 ของตัวละคร A" },
-        { "id": "q-sample-001-c02", "type": "normal", "content": "เบาะแสที่ 2 ของตัวละคร A" },
-        { "id": "q-sample-001-c03", "type": "locked", "content": "เบาะแสที่ 3 (locked) ของตัวละคร A" },
-        { "id": "q-sample-001-c04", "type": "normal", "content": "เบาะแสที่ 4 ของตัวละคร A" },
-        { "id": "q-sample-001-c05", "type": "locked", "content": "เบาะแสที่ 5 (locked) ของตัวละคร A" },
-        { "id": "q-sample-001-c06", "type": "normal", "content": "เบาะแสที่ 6 ของตัวละคร A" },
-        { "id": "q-sample-001-c07", "type": "normal", "content": "เบาะแสที่ 7 ของตัวละคร A" },
-        { "id": "q-sample-001-c08", "type": "locked", "content": "เบาะแสที่ 8 (locked) ของตัวละคร A" }
+        { "id": "q-001-c01", "type": "normal", "content": "สวมผ้าคาดหัวสีฟ้า" },
+        { "id": "q-001-c02", "type": "normal", "content": "ฝันอยากเป็นผู้นำสูงสุดของหมู่บ้าน" },
+        { "id": "q-001-c03", "type": "locked", "content": "มีจิตวิญญาณจิ้งจอก 9 หางอยู่ในร่างกาย" },
+        { "id": "q-001-c04", "type": "normal", "content": "ชอบกินราเมน Ichiraku เป็นชีวิตจิตใจ" },
+        { "id": "q-001-c05", "type": "normal", "content": "เทคนิคเด่นคือการโคลนนิ่งตัวเองหลายพัน" },
+        { "id": "q-001-c06", "type": "locked", "content": "พ่อแม่เสียชีวิตตั้งแต่เกิด ทิ้งให้อยู่คนเดียว" },
+        { "id": "q-001-c07", "type": "normal", "content": "มักพูดว่า 'dattebayo' ติดปาก" }
       ]
     },
     {
-      "id": "q-sample-002",
-      "answer": "ตัวละคร B",
-      "acceptedAnswers": ["ตัวละคร B", "Character B"],
-      "category": "sample",
+      "id": "q-anime-002",
+      "answer": "แอร์เรน เยเกอร์",
+      "acceptedAnswers": ["แอร์เรน", "eren", "เอเรน", "eren yeager", "แอร์เรน เยเกอร์"],
+      "category": "Attack on Titan",
       "clues": [
-        { "id": "q-sample-002-c01", "type": "normal", "content": "เบาะแสที่ 1 ของตัวละคร B" },
-        { "id": "q-sample-002-c02", "type": "locked", "content": "เบาะแสที่ 2 (locked) ของตัวละคร B" },
-        { "id": "q-sample-002-c03", "type": "normal", "content": "เบาะแสที่ 3 ของตัวละคร B" },
-        { "id": "q-sample-002-c04", "type": "normal", "content": "เบาะแสที่ 4 ของตัวละคร B" },
-        { "id": "q-sample-002-c05", "type": "locked", "content": "เบาะแสที่ 5 (locked) ของตัวละคร B" },
-        { "id": "q-sample-002-c06", "type": "normal", "content": "เบาะแสที่ 6 ของตัวละคร B" }
+        { "id": "q-002-c01", "type": "normal", "content": "เติบโตในโลกที่มีกำแพงสูงล้อมรอบเมือง" },
+        { "id": "q-002-c02", "type": "normal", "content": "เห็นแม่ถูกกินต่อหน้าต่อตาตั้งแต่เด็ก" },
+        { "id": "q-002-c03", "type": "locked", "content": "สามารถแปลงร่างเป็นไททันได้" },
+        { "id": "q-002-c04", "type": "normal", "content": "เข้าร่วมกองทัพเพื่อล้างแค้น" },
+        { "id": "q-002-c05", "type": "locked", "content": "ถือกุญแจลึกลับที่เปิดความจริงของโลก" },
+        { "id": "q-002-c06", "type": "normal", "content": "เพื่อนสนิทคือ Mikasa และ Armin" },
+        { "id": "q-002-c07", "type": "normal", "content": "ผมสั้นสีดำ ตาเขียว" }
+      ]
+    },
+    {
+      "id": "q-anime-003",
+      "answer": "ลัฟฟี่",
+      "acceptedAnswers": ["ลัฟฟี่", "luffy", "monkey d luffy", "มังกี้ ดี. ลัฟฟี่"],
+      "category": "One Piece",
+      "clues": [
+        { "id": "q-003-c01", "type": "normal", "content": "สวมหมวกฟางสีแดงตลอดเวลา" },
+        { "id": "q-003-c02", "type": "normal", "content": "ฝันอยากเป็นราชาแห่งโจรสลัด" },
+        { "id": "q-003-c03", "type": "normal", "content": "ร่างกายยืดได้เหมือนยาง" },
+        { "id": "q-003-c04", "type": "locked", "content": "กินผลปีศาจที่ทำให้ว่ายน้ำไม่ได้" },
+        { "id": "q-003-c05", "type": "normal", "content": "ตั้งทีมโจรสลัดในชื่อของตัวเอง" },
+        { "id": "q-003-c06", "type": "locked", "content": "พี่ชายเป็นหนึ่งในโจรสลัดชื่อดังของโลก" },
+        { "id": "q-003-c07", "type": "normal", "content": "ชอบกินเนื้อ ไม่ชอบแพ้" }
+      ]
+    },
+    {
+      "id": "q-anime-004",
+      "answer": "แทนจิโร่ คามาโดะ",
+      "acceptedAnswers": ["แทนจิโร่", "tanjiro", "tanjiro kamado", "แทนจิโร่ คามาโดะ"],
+      "category": "Demon Slayer",
+      "clues": [
+        { "id": "q-004-c01", "type": "normal", "content": "มีแผลเป็นรูปดาวที่หน้าผาก" },
+        { "id": "q-004-c02", "type": "normal", "content": "น้องสาวกลายเป็น Demon แต่เขายังปกป้อง" },
+        { "id": "q-004-c03", "type": "locked", "content": "ใช้เทคนิคการหายใจของน้ำ และของดวงอาทิตย์" },
+        { "id": "q-004-c04", "type": "normal", "content": "สวมต่างหูลายดอกไม้สีแดง-เขียว" },
+        { "id": "q-004-c05", "type": "normal", "content": "ครอบครัวถูกสังหารโดย Demon ในคืนหิมะ" },
+        { "id": "q-004-c06", "type": "locked", "content": "ดาบของเขาเปลี่ยนเป็นสีดำ ซึ่งหายากมาก" },
+        { "id": "q-004-c07", "type": "normal", "content": "จมูกดมกลิ่นได้แม่นมาก ใช้ในการสู้รบ" }
+      ]
+    },
+    {
+      "id": "q-anime-005",
+      "answer": "ไลท์ ยางามิ",
+      "acceptedAnswers": ["ไลท์", "light", "light yagami", "ไลท์ ยางามิ", "คิระ", "kira"],
+      "category": "Death Note",
+      "clues": [
+        { "id": "q-005-c01", "type": "normal", "content": "นักเรียนฉลาดที่สุดในญี่ปุ่น" },
+        { "id": "q-005-c02", "type": "normal", "content": "เชื่อว่าตัวเองเป็นพระเจ้าของโลกใหม่" },
+        { "id": "q-005-c03", "type": "locked", "content": "ครอบครองสมุดที่เขียนชื่อใครก็ตาย" },
+        { "id": "q-005-c04", "type": "normal", "content": "ตำรวจทั่วโลกตามล่าในนามแฝง" },
+        { "id": "q-005-c05", "type": "locked", "content": "มีเพื่อนเป็น Shinigami ตัวแสบ" },
+        { "id": "q-005-c06", "type": "normal", "content": "คู่แข่งคือนักสืบอัจฉริยะไร้ชื่อ" },
+        { "id": "q-005-c07", "type": "normal", "content": "ผมสีน้ำตาล หน้าตาดี เสื้อผ้าสะอาดเรียบร้อย" }
+      ]
+    },
+    {
+      "id": "q-anime-006",
+      "answer": "กอคู่",
+      "acceptedAnswers": ["กอคู่", "goku", "son goku", "ซอนกอคู่"],
+      "category": "Dragon Ball",
+      "clues": [
+        { "id": "q-006-c01", "type": "normal", "content": "ผมตั้งชี้ขึ้น เป็นเอกลักษณ์สำคัญ" },
+        { "id": "q-006-c02", "type": "normal", "content": "ส่งพลังงานด้วยท่า Kamehameha" },
+        { "id": "q-006-c03", "type": "locked", "content": "เกิดบนดาวเคราะห์ต่างๆ แต่โตบนโลก" },
+        { "id": "q-006-c04", "type": "normal", "content": "ชอบกินเยอะมาก สามารถแปลงร่างเพิ่มพลัง" },
+        { "id": "q-006-c05", "type": "locked", "content": "แปลงร่างแบบสูงสุดได้ผมเปลี่ยนเป็นสีทอง" },
+        { "id": "q-006-c06", "type": "normal", "content": "ต่อสู้เพื่อปกป้องโลกและจักรวาล" },
+        { "id": "q-006-c07", "type": "normal", "content": "มีลูกชายชื่อ Gohan" }
       ]
     }
   ]
