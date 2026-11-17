@@ -5,24 +5,17 @@ import { reserveRoom, joinLobby, getOrCreatePlayerId } from '../firebase/room';
 import type { QuestionSet, Question } from '../models';
 import sampleData from '../data/sample-questions.json';
 
+const defaultQuestionSet = (() => {
+  try { return validateQuestionSet(sampleData); } catch { return null; }
+})();
+
 export default function SetupScreen() {
   const { state, dispatch } = useGame();
   const [name, setName] = useState(state.myName ?? '');
-  const [questionSet, setQuestionSet] = useState<QuestionSet | null>(null);
+  const [questionSet, setQuestionSet] = useState<QuestionSet | null>(defaultQuestionSet);
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  function handleLoadSample() {
-    try {
-      const qs = validateQuestionSet(sampleData);
-      setQuestionSet(qs);
-      setSelectedQuestion(null);
-      setError(null);
-    } catch (e) {
-      setError(String(e));
-    }
-  }
 
   function handleLoadFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -84,12 +77,9 @@ export default function SetupScreen() {
             />
           </div>
           <div className="section-title">Question Set</div>
-          <div className="btn-row" style={{ marginBottom: 12 }}>
-            <button className="btn btn--ghost" onClick={handleLoadSample}>
-              📋 ใช้ Sample
-            </button>
-            <label className="btn btn--ghost" style={{ cursor: 'pointer' }}>
-              📁 โหลดไฟล์ JSON
+          <div style={{ marginBottom: 8 }}>
+            <label className="btn btn--ghost" style={{ cursor: 'pointer', fontSize: '0.85rem' }}>
+              📁 ใช้ไฟล์ JSON อื่น
               <input type="file" accept=".json" style={{ display: 'none' }} onChange={handleLoadFile} />
             </label>
           </div>
