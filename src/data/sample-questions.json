@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "sample-set",
+  "name": "Sample Set (ทดสอบระบบ)",
+  "questions": [
+    {
+      "id": "q-sample-001",
+      "answer": "ตัวละคร A",
+      "acceptedAnswers": ["ตัวละคร A", "Character A"],
+      "category": "sample",
+      "clues": [
+        { "id": "q-sample-001-c01", "type": "normal", "content": "เบาะแสที่ 1 ของตัวละคร A" },
+        { "id": "q-sample-001-c02", "type": "normal", "content": "เบาะแสที่ 2 ของตัวละคร A" },
+        { "id": "q-sample-001-c03", "type": "locked", "content": "เบาะแสที่ 3 (locked) ของตัวละคร A" },
+        { "id": "q-sample-001-c04", "type": "normal", "content": "เบาะแสที่ 4 ของตัวละคร A" },
+        { "id": "q-sample-001-c05", "type": "locked", "content": "เบาะแสที่ 5 (locked) ของตัวละคร A" },
+        { "id": "q-sample-001-c06", "type": "normal", "content": "เบาะแสที่ 6 ของตัวละคร A" },
+        { "id": "q-sample-001-c07", "type": "normal", "content": "เบาะแสที่ 7 ของตัวละคร A" },
+        { "id": "q-sample-001-c08", "type": "locked", "content": "เบาะแสที่ 8 (locked) ของตัวละคร A" }
+      ]
+    },
+    {
+      "id": "q-sample-002",
+      "answer": "ตัวละคร B",
+      "acceptedAnswers": ["ตัวละคร B", "Character B"],
+      "category": "sample",
+      "clues": [
+        { "id": "q-sample-002-c01", "type": "normal", "content": "เบาะแสที่ 1 ของตัวละคร B" },
+        { "id": "q-sample-002-c02", "type": "locked", "content": "เบาะแสที่ 2 (locked) ของตัวละคร B" },
+        { "id": "q-sample-002-c03", "type": "normal", "content": "เบาะแสที่ 3 ของตัวละคร B" },
+        { "id": "q-sample-002-c04", "type": "normal", "content": "เบาะแสที่ 4 ของตัวละคร B" },
+        { "id": "q-sample-002-c05", "type": "locked", "content": "เบาะแสที่ 5 (locked) ของตัวละคร B" },
+        { "id": "q-sample-002-c06", "type": "normal", "content": "เบาะแสที่ 6 ของตัวละคร B" }
+      ]
+    }
+  ]
+}
