@@ -7,3 +7,9 @@ services:
       - path: /*
         name: Cache-Control
         value: no-cache, no-store, must-revalidate
+      - path: /assets/*.js
+        name: Content-Type
+        value: application/javascript
+      - path: /assets/*.css
+        name: Content-Type
+        value: text/css
