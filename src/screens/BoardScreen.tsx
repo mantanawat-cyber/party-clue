@@ -103,9 +103,9 @@ export default function BoardScreen() {
                   {p.isBlackedOut && <span className="badge badge--warning" style={{ marginLeft: 6 }}>⚡</span>}
                 </span>
                 <div className="player-counts">
-                  <span className="badge badge--normal">{p.clueHand.filter(c => c.status === 'normal').length} N</span>
-                  <span className="badge badge--locked">{p.clueHand.filter(c => c.status === 'locked').length} L</span>
-                  <span className="badge badge--action">{p.actionHand.length} A</span>
+                  <span className="badge badge--normal">{p.clueHand.filter(c => c.status === 'normal').length} เบาะแส</span>
+                  <span className="badge badge--locked">{p.clueHand.filter(c => c.status === 'locked').length} ล็อค</span>
+                  <span className="badge badge--action">{p.actionHand.length} แอ็กชัน</span>
                 </div>
               </div>
             );
