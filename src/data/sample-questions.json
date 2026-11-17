@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "anime-set-01",
-  "name": "ทายตัวละครอนิเมะ Vol.1",
+  "name": "ทายตัวละครอนิเมะ — แฟนพันแท้เท่านั้น",
   "questions": [
     {
       "id": "q-anime-001",
@@ -9,13 +9,13 @@
       "acceptedAnswers": ["นารูโตะ", "naruto", "นารูโตะ อุซุมากิ", "uzumaki naruto"],
       "category": "Naruto",
       "clues": [
-        { "id": "q-001-c01", "type": "normal", "content": "สวมผ้าคาดหัวสีฟ้า" },
-        { "id": "q-001-c02", "type": "normal", "content": "ฝันอยากเป็นผู้นำสูงสุดของหมู่บ้าน" },
-        { "id": "q-001-c03", "type": "locked", "content": "มีจิตวิญญาณจิ้งจอก 9 หางอยู่ในร่างกาย" },
-        { "id": "q-001-c04", "type": "normal", "content": "ชอบกินราเมน Ichiraku เป็นชีวิตจิตใจ" },
-        { "id": "q-001-c05", "type": "normal", "content": "เทคนิคเด่นคือการโคลนนิ่งตัวเองหลายพัน" },
-        { "id": "q-001-c06", "type": "locked", "content": "พ่อแม่เสียชีวิตตั้งแต่เกิด ทิ้งให้อยู่คนเดียว" },
-        { "id": "q-001-c07", "type": "normal", "content": "มักพูดว่า 'dattebayo' ติดปาก" }
+        { "id": "q-001-c01", "type": "normal", "content": "วันเกิดตรงกับวันที่ Kyubi โจมตีหมู่บ้านพอดี" },
+        { "id": "q-001-c02", "type": "normal", "content": "เทคนิค Shadow Clone ใช้ Chakra มากกว่า Jonin ทั้งหมู่บ้านรวมกัน" },
+        { "id": "q-001-c03", "type": "locked", "content": "ชื่อถูกตั้งโดยนักเขียนนิยายที่ต่อมาเป็นอาจารย์คนสำคัญ" },
+        { "id": "q-001-c04", "type": "normal", "content": "เคยตายชั่วคราวตอนรับพลัง Six Paths จาก Sage of Six Paths" },
+        { "id": "q-001-c05", "type": "locked", "content": "รูปแบบ Sage Mode ต้องยืนนิ่งสนิทจึงเก็บ Natural Energy ได้" },
+        { "id": "q-001-c06", "type": "normal", "content": "สอบ Graduation ตก 3 ครั้งก่อนได้ใบรับรอง Ninja" },
+        { "id": "q-001-c07", "type": "normal", "content": "Kurama (จิ้งจอก) ให้ Chakra ครั้งแรกตอนกำลังจะจมน้ำ" }
       ]
     },
     {
@@ -24,13 +24,13 @@
       "acceptedAnswers": ["แอร์เรน", "eren", "เอเรน", "eren yeager", "แอร์เรน เยเกอร์"],
       "category": "Attack on Titan",
       "clues": [
-        { "id": "q-002-c01", "type": "normal", "content": "เติบโตในโลกที่มีกำแพงสูงล้อมรอบเมือง" },
-        { "id": "q-002-c02", "type": "normal", "content": "เห็นแม่ถูกกินต่อหน้าต่อตาตั้งแต่เด็ก" },
-        { "id": "q-002-c03", "type": "locked", "content": "สามารถแปลงร่างเป็นไททันได้" },
-        { "id": "q-002-c04", "type": "normal", "content": "เข้าร่วมกองทัพเพื่อล้างแค้น" },
-        { "id": "q-002-c05", "type": "locked", "content": "ถือกุญแจลึกลับที่เปิดความจริงของโลก" },
-        { "id": "q-002-c06", "type": "normal", "content": "เพื่อนสนิทคือ Mikasa และ Armin" },
-        { "id": "q-002-c07", "type": "normal", "content": "ผมสั้นสีดำ ตาเขียว" }
+        { "id": "q-002-c01", "type": "normal", "content": "Attack Titan มีพลังพิเศษ — รับความทรงจำจากอนาคตได้" },
+        { "id": "q-002-c02", "type": "normal", "content": "เคยกินพ่อตัวเองโดยไม่รู้ตัวในร่าง Titan" },
+        { "id": "q-002-c03", "type": "locked", "content": "ได้รับ Titan Hardening จาก Female Titan ตอนสู้ในถ้ำ" },
+        { "id": "q-002-c04", "type": "normal", "content": "Rumbling ที่ปล่อยใช้ Titan ใต้กำแพง Wall Maria" },
+        { "id": "q-002-c05", "type": "locked", "content": "Path ของ Founding Titan เชื่อมถึงได้ผ่านการสัมผัสเลือด Royal" },
+        { "id": "q-002-c06", "type": "normal", "content": "ถูกกิน แล้วแปลงร่างจากในท้อง Titan ครั้งแรก" },
+        { "id": "q-002-c07", "type": "normal", "content": "ผมถักมัดหลังในช่วง Marley Arc ดูไม่ออกว่าเป็นคนเดิม" }
       ]
     },
     {
@@ -39,13 +39,13 @@
       "acceptedAnswers": ["ลัฟฟี่", "luffy", "monkey d luffy", "มังกี้ ดี. ลัฟฟี่"],
       "category": "One Piece",
       "clues": [
-        { "id": "q-003-c01", "type": "normal", "content": "สวมหมวกฟางสีแดงตลอดเวลา" },
-        { "id": "q-003-c02", "type": "normal", "content": "ฝันอยากเป็นราชาแห่งโจรสลัด" },
-        { "id": "q-003-c03", "type": "normal", "content": "ร่างกายยืดได้เหมือนยาง" },
-        { "id": "q-003-c04", "type": "locked", "content": "กินผลปีศาจที่ทำให้ว่ายน้ำไม่ได้" },
-        { "id": "q-003-c05", "type": "normal", "content": "ตั้งทีมโจรสลัดในชื่อของตัวเอง" },
-        { "id": "q-003-c06", "type": "locked", "content": "พี่ชายเป็นหนึ่งในโจรสลัดชื่อดังของโลก" },
-        { "id": "q-003-c07", "type": "normal", "content": "ชอบกินเนื้อ ไม่ชอบแพ้" }
+        { "id": "q-003-c01", "type": "normal", "content": "ทำรอยแผลใต้ตาซ้ายตัวเองด้วยมีด เพื่อพิสูจน์ความกล้า" },
+        { "id": "q-003-c02", "type": "normal", "content": "Gear 5 ทำให้ผมและชุดเปลี่ยนสีขาว พลังมาจาก Nika" },
+        { "id": "q-003-c03", "type": "locked", "content": "ผลปีศาจที่กินชื่อจริงคือ Hito Hito no Mi: Model Nika ไม่ใช่ Gum-Gum" },
+        { "id": "q-003-c04", "type": "normal", "content": "Shanks แลกแขนเพื่อช่วยชีวิตเขาตอนเด็ก นั่นเป็นแรงบันดาลใจ" },
+        { "id": "q-003-c05", "type": "locked", "content": "Haoshoku Haki ระดับสูงสามารถ 'เคลือบ' อาวุธได้" },
+        { "id": "q-003-c06", "type": "normal", "content": "เกือบตายบน Marineford ตอนช่วยพี่ชาย แต่สายเกิน" },
+        { "id": "q-003-c07", "type": "normal", "content": "ตระกูลมีทั้ง Marine Fleet Admiral และ Revolutionary Army Leader" }
       ]
     },
     {
@@ -54,13 +54,13 @@
       "acceptedAnswers": ["แทนจิโร่", "tanjiro", "tanjiro kamado", "แทนจิโร่ คามาโดะ"],
       "category": "Demon Slayer",
       "clues": [
-        { "id": "q-004-c01", "type": "normal", "content": "มีแผลเป็นรูปดาวที่หน้าผาก" },
-        { "id": "q-004-c02", "type": "normal", "content": "น้องสาวกลายเป็น Demon แต่เขายังปกป้อง" },
-        { "id": "q-004-c03", "type": "locked", "content": "ใช้เทคนิคการหายใจของน้ำ และของดวงอาทิตย์" },
-        { "id": "q-004-c04", "type": "normal", "content": "สวมต่างหูลายดอกไม้สีแดง-เขียว" },
-        { "id": "q-004-c05", "type": "normal", "content": "ครอบครัวถูกสังหารโดย Demon ในคืนหิมะ" },
-        { "id": "q-004-c06", "type": "locked", "content": "ดาบของเขาเปลี่ยนเป็นสีดำ ซึ่งหายากมาก" },
-        { "id": "q-004-c07", "type": "normal", "content": "จมูกดมกลิ่นได้แม่นมาก ใช้ในการสู้รบ" }
+        { "id": "q-004-c01", "type": "normal", "content": "ต่างหูของพ่อเป็นสิ่งที่ Muzan เกลียดและกลัวมากที่สุด" },
+        { "id": "q-004-c02", "type": "normal", "content": "เทคนิค Hinokami Kagura สืบทอดผ่านการเต้นรำงานปีใหม่ทุกปี" },
+        { "id": "q-004-c03", "type": "locked", "content": "ดาบสีดำในประวัติศาสตร์ไม่เคยมีใครใช้จนถึง Hashira ได้" },
+        { "id": "q-004-c04", "type": "normal", "content": "แผลเป็นที่หน้าผากเดิมเป็นรอยไหม้ธรรมดา กลายเป็น Demon Slayer Mark ทีหลัง" },
+        { "id": "q-004-c05", "type": "locked", "content": "เคยกลายเป็น Demon ชั่วคราวตอน Final Battle กับ Muzan" },
+        { "id": "q-004-c06", "type": "normal", "content": "ใช้กลิ่นดมแยกแยะอารมณ์ศัตรูและหาจุดอ่อนในระหว่างสู้" },
+        { "id": "q-004-c07", "type": "normal", "content": "เพื่อนนักล่า Inosuke สวมหัวหมูป่าและ Zenitsu นอนหลับตอนสู้" }
       ]
     },
     {
@@ -69,28 +69,28 @@
       "acceptedAnswers": ["ไลท์", "light", "light yagami", "ไลท์ ยางามิ", "คิระ", "kira"],
       "category": "Death Note",
       "clues": [
-        { "id": "q-005-c01", "type": "normal", "content": "นักเรียนฉลาดที่สุดในญี่ปุ่น" },
-        { "id": "q-005-c02", "type": "normal", "content": "เชื่อว่าตัวเองเป็นพระเจ้าของโลกใหม่" },
-        { "id": "q-005-c03", "type": "locked", "content": "ครอบครองสมุดที่เขียนชื่อใครก็ตาย" },
-        { "id": "q-005-c04", "type": "normal", "content": "ตำรวจทั่วโลกตามล่าในนามแฝง" },
-        { "id": "q-005-c05", "type": "locked", "content": "มีเพื่อนเป็น Shinigami ตัวแสบ" },
-        { "id": "q-005-c06", "type": "normal", "content": "คู่แข่งคือนักสืบอัจฉริยะไร้ชื่อ" },
-        { "id": "q-005-c07", "type": "normal", "content": "ผมสีน้ำตาล หน้าตาดี เสื้อผ้าสะอาดเรียบร้อย" }
+        { "id": "q-005-c01", "type": "normal", "content": "ซ่อน Death Note ไว้ใต้ลิ้นชักด้วยกลไก — ถ้าเปิดผิดจะเผาตัวเอง" },
+        { "id": "q-005-c02", "type": "normal", "content": "ชื่อ Kira มาจากคำว่า Killer ที่ชาวต่างชาติออกเสียงสำเนียงญี่ปุ่น" },
+        { "id": "q-005-c03", "type": "locked", "content": "ตายด้วย Cardiac Arrest เหมือนเหยื่อทุกคน — Ryuk เขียนชื่อเขาเอง" },
+        { "id": "q-005-c04", "type": "normal", "content": "สอบได้คะแนนสูงสุดทั่วประเทศ และสมัครเป็น NPA เพื่อสืบคดีตัวเอง" },
+        { "id": "q-005-c05", "type": "locked", "content": "สละความทรงจำเรื่อง Death Note ชั่วคราวเพื่อพ้นข้อสงสัย L" },
+        { "id": "q-005-c06", "type": "normal", "content": "กฎ Death Note ที่ 'ประดิษฐ์' ขึ้นมาเองเพื่อหลอก L" },
+        { "id": "q-005-c07", "type": "normal", "content": "Near เอาชนะได้เพราะสลับ Death Note ก่อน Confrontation ที่โกดัง" }
       ]
     },
     {
       "id": "q-anime-006",
       "answer": "กอคู่",
-      "acceptedAnswers": ["กอคู่", "goku", "son goku", "ซอนกอคู่"],
+      "acceptedAnswers": ["กอคู่", "goku", "son goku", "ซอนกอคู่", "คาคาร็อต", "kakarot"],
       "category": "Dragon Ball",
       "clues": [
-        { "id": "q-006-c01", "type": "normal", "content": "ผมตั้งชี้ขึ้น เป็นเอกลักษณ์สำคัญ" },
-        { "id": "q-006-c02", "type": "normal", "content": "ส่งพลังงานด้วยท่า Kamehameha" },
-        { "id": "q-006-c03", "type": "locked", "content": "เกิดบนดาวเคราะห์ต่างๆ แต่โตบนโลก" },
-        { "id": "q-006-c04", "type": "normal", "content": "ชอบกินเยอะมาก สามารถแปลงร่างเพิ่มพลัง" },
-        { "id": "q-006-c05", "type": "locked", "content": "แปลงร่างแบบสูงสุดได้ผมเปลี่ยนเป็นสีทอง" },
-        { "id": "q-006-c06", "type": "normal", "content": "ต่อสู้เพื่อปกป้องโลกและจักรวาล" },
-        { "id": "q-006-c07", "type": "normal", "content": "มีลูกชายชื่อ Gohan" }
+        { "id": "q-006-c01", "type": "normal", "content": "ชื่อเดิมบนดาว Saiyan คือ Kakarot — ตั้งชื่อตามแครอท" },
+        { "id": "q-006-c02", "type": "normal", "content": "Super Saiyan ครั้งแรกเกิดจากความโกรธที่เพื่อนสนิทถูกฆ่าซ้ำ" },
+        { "id": "q-006-c03", "type": "locked", "content": "เดิน Snake Way ระยะทาง 1 ล้าน km เพื่อฝึกกับ King Kai หลังตาย" },
+        { "id": "q-006-c04", "type": "normal", "content": "ตายครั้งแรกโดยสมัครใจ — ยอมให้ Piccolo ยิงตัวเองเพื่อจับ Raditz" },
+        { "id": "q-006-c05", "type": "locked", "content": "Ultra Instinct ทำให้ร่างกายสู้โดยไม่ต้องคิด ผมเปลี่ยนเงิน" },
+        { "id": "q-006-c06", "type": "normal", "content": "ส่งลูกชายฝึกกับ Piccolo แทนตัวเองเพราะเชื่อว่าลูกเก่งกว่า" },
+        { "id": "q-006-c07", "type": "normal", "content": "เจ้าของหางลิงที่ถูกตัดหลายครั้ง และอ่อนแอมากตอนถูกจับจ้องพระจันทร์เต็มดวง" }
       ]
     }
   ]
