@@ -2,31 +2,128 @@ import { useState } from 'react';
 import { useGame } from '../store/GameContext';
 import type { ActionInstance, ClueInstance, Player } from '../models';
 
+// ─── Card image maps ─────────────────────────────────────────────────────────
+
+const ACTION_IMAGES: Record<string, string> = {
+  DECODE:          '/cards/action-decode.png',
+  ENCODE:          '/cards/action-encode.png',
+  SHUFFLE:         '/cards/action-shuffle.png',
+  BLACKOUT:        '/cards/action-blackout.png',
+  ANONYMOUS_GUESS: '/cards/action-anonymous-guess.png',
+  SPY:             '/cards/action-spy.png',
+  SHUTDOWN:        '/cards/action-shutdown.png',
+  INVESTIGATE:     '/cards/action-investigate.png',
+  SWAP:            '/cards/action-swap.png',
+  DISCARD:         '/cards/action-discard.png',
+};
+
+function clueTextSize(len: number): string {
+  if (len < 30) return '1rem';
+  if (len < 50) return '0.88rem';
+  if (len < 70) return '0.78rem';
+  return '0.68rem';
+}
+
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
 function ClueCard({ clue, onClick, selected }: { clue: ClueInstance; onClick?: () => void; selected?: boolean }) {
-  const cls = `card card--${clue.status}${onClick ? ' card--clickable' : ''}${selected ? ' card--selected' : ''}`;
-  if (clue.status === 'locked') {
-    return (
-      <div className={cls} onClick={onClick}>
-        <div className="card__label">🔒 Locked Clue</div>
-        <div className="card__content text-muted">ต้องใช้ Decode เพื่อเปิด</div>
-      </div>
-    );
-  }
+  const isLocked = clue.status === 'locked';
+  const imgSrc = isLocked ? '/cards/clue-locked.png' : '/cards/clue-normal.png';
+  const text = isLocked ? 'ต้องใช้การ์ด Decode เพื่อปลดล็อก' : clue.content;
+
   return (
-    <div className={cls} onClick={onClick}>
-      <div className="card__label">{clue.status === 'normal' ? 'Normal Clue' : 'Public Clue'}</div>
-      <div className="card__content">{clue.content}</div>
+    <div
+      onClick={onClick}
+      style={{
+        position: 'relative',
+        width: '100%',
+        aspectRatio: '3 / 4.2',
+        cursor: onClick ? 'pointer' : 'default',
+        borderRadius: 8,
+        outline: selected ? '3px solid var(--action)' : 'none',
+        outlineOffset: 2,
+        transition: 'transform 0.15s, outline 0.1s',
+        transform: selected ? 'scale(1.04)' : undefined,
+        flexShrink: 0,
+      }}
+    >
+      <img
+        src={imgSrc}
+        alt={isLocked ? 'Locked Clue' : 'Normal Clue'}
+        style={{ width: '100%', height: '100%', objectFit: 'fill', borderRadius: 8, display: 'block' }}
+        draggable={false}
+      />
+      {/* Text overlay — calibrated to blank text box area */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '61%',
+          left: '10%',
+          right: '10%',
+          height: '23%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          overflow: 'hidden',
+          fontSize: clueTextSize(text.length),
+          lineHeight: 1.35,
+          color: isLocked ? '#8b5cf6' : '#3b2000',
+          fontWeight: isLocked ? 500 : 600,
+          padding: '0 4px',
+          wordBreak: 'break-word',
+        }}
+      >
+        {text}
+      </div>
     </div>
   );
 }
 
 function ActionCard({ action, onClick, selected }: { action: ActionInstance; onClick?: () => void; selected?: boolean }) {
+  const imgSrc = ACTION_IMAGES[action.type] ?? null;
+
+  if (!imgSrc) {
+    return (
+      <div className={`card card--action${onClick ? ' card--clickable' : ''}${selected ? ' card--selected' : ''}`} onClick={onClick}>
+        <div className="card__name">{action.name}</div>
+        <div className="card__desc">{action.description}</div>
+      </div>
+    );
+  }
+
   return (
-    <div className={`card card--action${onClick ? ' card--clickable' : ''}${selected ? ' card--selected' : ''}`} onClick={onClick}>
-      <div className="card__name">{action.name}</div>
-      <div className="card__desc">{action.description}</div>
+    <div
+      onClick={onClick}
+      style={{
+        position: 'relative',
+        width: '100%',
+        aspectRatio: '3 / 4.2',
+        cursor: onClick ? 'pointer' : 'default',
+        borderRadius: 8,
+        outline: selected ? '3px solid var(--action)' : 'none',
+        outlineOffset: 2,
+        transition: 'transform 0.15s, outline 0.1s',
+        transform: selected ? 'scale(1.04)' : undefined,
+        flexShrink: 0,
+      }}
+    >
+      <img
+        src={imgSrc}
+        alt={action.name}
+        style={{ width: '100%', height: '100%', objectFit: 'fill', borderRadius: 8, display: 'block' }}
+        draggable={false}
+      />
+      {onClick && (
+        <div style={{
+          position: 'absolute', inset: 0, borderRadius: 8,
+          background: 'rgba(0,0,0,0)',
+          transition: 'background 0.15s',
+        }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'rgba(0,0,0,0)')}
+        />
+      )}
     </div>
   );
 }
