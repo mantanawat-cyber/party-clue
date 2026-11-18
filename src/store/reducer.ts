@@ -43,7 +43,7 @@ export interface AppState {
   guessPhase: 'idle' | 'pending_penalty';
   isAnonymousGuess: boolean;
   hasRedrawnThisTurn: boolean;
-  lastDrawnAction: import('../models').ActionInstance | null;
+  lastDrawnCard: { kind: 'action'; card: import('../models').ActionInstance } | { kind: 'clue'; card: import('../models').ClueInstance } | null;
 }
 
 export const INITIAL_STATE: AppState = {
@@ -61,7 +61,7 @@ export const INITIAL_STATE: AppState = {
   guessPhase: 'idle',
   isAnonymousGuess: false,
   hasRedrawnThisTurn: false,
-  lastDrawnAction: null,
+  lastDrawnCard: null,
 };
 
 // ─── Dispatch Actions ────────────────────────────────────────────────────────
@@ -199,11 +199,20 @@ export function appReducer(state: AppState, action: AppAction): AppState {
 
     case 'DRAW_ACTION': {
       if (!state.gameState) return state;
-      const prevHand = state.gameState.players[state.gameState.currentPlayerIndex].actionHand;
+      const idx = state.gameState.currentPlayerIndex;
+      const prevActionHand = state.gameState.players[idx].actionHand;
+      const prevClueHand = state.gameState.players[idx].clueHand;
       const gs = drawActionPhase(state.gameState);
-      const newHand = gs.players[gs.currentPlayerIndex].actionHand;
-      const drawn = newHand.find(a => !prevHand.some(p => p.instanceId === a.instanceId)) ?? null;
-      return { ...state, gameState: gs, lastDrawnAction: drawn };
+      const newActionHand = gs.players[gs.currentPlayerIndex].actionHand;
+      const newClueHand = gs.players[gs.currentPlayerIndex].clueHand;
+      const drawnAction = newActionHand.find(a => !prevActionHand.some(p => p.instanceId === a.instanceId));
+      const drawnClue = newClueHand.find(c => !prevClueHand.some(p => p.instanceId === c.instanceId));
+      const lastDrawnCard = drawnAction
+        ? { kind: 'action' as const, card: drawnAction }
+        : drawnClue
+          ? { kind: 'clue' as const, card: drawnClue }
+          : null;
+      return { ...state, gameState: gs, lastDrawnCard };
     }
 
     case 'PLAY_ACTION': {
@@ -329,7 +338,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         guessPhase: 'idle',
         isAnonymousGuess: false,
         hasRedrawnThisTurn: false,
-        lastDrawnAction: null,
+        lastDrawnCard: null,
       };
     }
 

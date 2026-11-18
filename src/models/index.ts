@@ -122,6 +122,7 @@ export interface GameState {
   turnNumber: number;
   clueDeck: ClueInstance[];
   actionDeck: ActionInstance[];
+  drawOrder: ('action' | 'clue')[]; // interleaved draw sequence: 1 clue per 4 actions
   actionDiscard: ActionInstance[];
   publicClues: ClueInstance[];
   currentQuestion: Question | null;

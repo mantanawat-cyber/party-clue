@@ -4,22 +4,43 @@ import { addLog } from './utils';
 
 const ACTION_HAND_LIMIT = 7;
 
-// Phase 1: Draw Action
+// Phase 1: Draw card — may draw Action or Clue based on drawOrder
 export function drawActionPhase(state: GameState): GameState {
   const player = state.players[state.currentPlayerIndex];
 
-  // Skip if hand full or deck empty
+  // Determine what to draw from drawOrder
+  const [nextKind, ...remainingOrder] = state.drawOrder;
+  const drawKind = nextKind ?? 'action'; // default to action if order exhausted
+
+  // Try to draw a Clue
+  if (drawKind === 'clue' && state.clueDeck.length > 0) {
+    const [drawn, remainingClueDeck] = drawFromDeck(state.clueDeck);
+    if (drawn) {
+      const clue = { ...drawn, ownerId: player.id };
+      const updatedPlayers = state.players.map((p, i) =>
+        i === state.currentPlayerIndex
+          ? { ...p, clueHand: [...p.clueHand, clue] }
+          : p
+      );
+      return addLog(
+        { ...state, players: updatedPlayers, clueDeck: remainingClueDeck, drawOrder: remainingOrder, turnPhase: 'end' },
+        `${player.name} จั่วได้ Clue: "${drawn.content}"`
+      );
+    }
+  }
+
+  // Draw Action (also fallback when clueDeck empty)
   if (player.actionHand.length >= ACTION_HAND_LIMIT || state.actionDeck.length === 0) {
     return addLog(
-      { ...state, turnPhase: 'end' },
+      { ...state, drawOrder: remainingOrder, turnPhase: 'end' },
       player.actionHand.length >= ACTION_HAND_LIMIT
         ? `${player.name}: Action เต็มมือ ข้าม Draw`
         : `${player.name}: Action Deck หมด ข้าม Draw`
     );
   }
 
-  const [drawn, remainingDeck] = drawFromDeck(state.actionDeck);
-  if (!drawn) return { ...state, turnPhase: 'end' };
+  const [drawn, remainingActionDeck] = drawFromDeck(state.actionDeck);
+  if (!drawn) return { ...state, drawOrder: remainingOrder, turnPhase: 'end' };
 
   const updatedPlayers = state.players.map((p, i) =>
     i === state.currentPlayerIndex
@@ -28,7 +49,7 @@ export function drawActionPhase(state: GameState): GameState {
   );
 
   return addLog(
-    { ...state, players: updatedPlayers, actionDeck: remainingDeck, turnPhase: 'end' },
+    { ...state, players: updatedPlayers, actionDeck: remainingActionDeck, drawOrder: remainingOrder, turnPhase: 'end' },
     `${player.name} จั่ว Action: ${drawn.name}`
   );
 }

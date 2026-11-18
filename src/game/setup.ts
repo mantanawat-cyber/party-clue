@@ -55,6 +55,15 @@ export function setupGame(
   const [firstPublic, remainingClues] = drawFromDeck(clueDeck);
   const publicClues = firstPublic ? [{ ...firstPublic, status: 'public' as const, ownerId: null }] : [];
 
+  // Build drawOrder: 1 clue per 4 actions
+  const totalDraws = actionDeck.length + Math.floor(remainingClues.length * 0.25);
+  const clueSlots = Math.floor(totalDraws / 5);
+  const rawOrder: ('action' | 'clue')[] = [
+    ...Array(totalDraws - clueSlots).fill('action'),
+    ...Array(clueSlots).fill('clue'),
+  ];
+  const drawOrder = shuffle(rawOrder);
+
   // Pick random starting player
   const startIndex = Math.floor(Math.random() * players.length);
 
@@ -68,6 +77,7 @@ export function setupGame(
     turnNumber: 1,
     clueDeck: remainingClues,
     actionDeck,
+    drawOrder,
     actionDiscard: [],
     publicClues,
     currentQuestion: question,

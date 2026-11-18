@@ -76,6 +76,7 @@ function normalizeGameState(raw: GameState): GameState {
     ...raw,
     actionDeck: raw.actionDeck ?? [],
     actionDiscard: raw.actionDiscard ?? [],
+    drawOrder: raw.drawOrder ?? [],
     clueDeck: raw.clueDeck ?? [],
     publicClues: raw.publicClues ?? [],
     log: raw.log ?? [],

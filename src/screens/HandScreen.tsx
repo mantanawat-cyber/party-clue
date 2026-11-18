@@ -377,7 +377,7 @@ function MainHandView({ player }: { player: Player }) {
           )}
 
           {/* My turn — end phase: done */}
-          {isMyTurn && !isBlackedOut && isEndPhase && !state.lastDrawnAction && (
+          {isMyTurn && !isBlackedOut && isEndPhase && !state.lastDrawnCard && (
             <p style={{ color: 'rgba(200,180,140,0.4)', fontSize: '0.85rem', margin: 0 }}>✓ ทำแล้ว — กดจบเทิร์น</p>
           )}
         </div>
@@ -419,14 +419,20 @@ function MainHandView({ player }: { player: Player }) {
         )}
 
         {/* Drawn card reveal */}
-        {isMyTurn && isEndPhase && state.lastDrawnAction && (
+        {isMyTurn && isEndPhase && state.lastDrawnCard && (
           <div style={{ ...gpanel, border: '1px solid rgba(200,160,60,0.5)', background: 'rgba(20,12,4,0.95)' }}>
             <div style={{ ...gsec, color: 'rgba(220,180,80,0.8)' }}>✨ การ์ดที่ได้</div>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
-              <ActionCard action={state.lastDrawnAction} />
+              {state.lastDrawnCard.kind === 'action'
+                ? <ActionCard action={state.lastDrawnCard.card} />
+                : <ClueCard clue={state.lastDrawnCard.card} />
+              }
             </div>
             <div style={{ textAlign: 'center', color: 'rgba(200,180,140,0.6)', fontSize: '0.85rem', marginBottom: 12 }}>
-              {state.lastDrawnAction.description}
+              {state.lastDrawnCard.kind === 'action'
+                ? state.lastDrawnCard.card.description
+                : state.lastDrawnCard.card.status === 'locked' ? '🔒 Locked Clue' : '🔍 Normal Clue'
+              }
             </div>
             <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'END_TURN' })}>
               รับทราบ — จบเทิร์น →
@@ -435,7 +441,7 @@ function MainHandView({ player }: { player: Player }) {
         )}
 
         {/* End turn — only after action done, and no drawn card pending reveal */}
-        {isMyTurn && (isEndPhase || isBlackedOut) && !state.lastDrawnAction && (
+        {isMyTurn && (isEndPhase || isBlackedOut) && !state.lastDrawnCard && (
           <div style={{ marginTop: 8 }}>
             <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'END_TURN' })}>
               จบเทิร์น →
