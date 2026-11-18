@@ -2,26 +2,23 @@ import { useState } from 'react';
 import { useGame } from '../store/GameContext';
 import { validateQuestionSet, pickRandomQuestion } from '../game';
 import { reserveRoom, joinLobby, getOrCreatePlayerId } from '../firebase/room';
-import type { QuestionSet, Question } from '../models';
 import sampleData from '../data/sample-questions.json';
 
-const defaultQuestionSet = (() => {
+const questionSet = (() => {
   try { return validateQuestionSet(sampleData); } catch { return null; }
 })();
 
 export default function SetupScreen() {
   const { state, dispatch } = useGame();
   const [name, setName] = useState(state.myName ?? '');
-  const [questionSet] = useState<QuestionSet | null>(defaultQuestionSet);
-  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleCreate() {
     const trimmedName = name.trim();
     if (!trimmedName) { setError('กรุณากรอกชื่อก่อน'); return; }
-    const q = selectedQuestion ?? (questionSet ? pickRandomQuestion(questionSet) : null);
-    if (!q) { setError('กรุณาโหลด Question Set ก่อน'); return; }
+    const q = questionSet ? pickRandomQuestion(questionSet) : null;
+    if (!q) { setError('ไม่พบโจทย์'); return; }
 
     dispatch({ type: 'SET_MY_NAME', name: trimmedName });
     setError(null);
@@ -39,7 +36,7 @@ export default function SetupScreen() {
 
   return (
     <div className="screen-center">
-      <div className="container" style={{ maxWidth: 480 }}>
+      <div className="container" style={{ maxWidth: 400 }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div className="setup-title">🃏 Party Clue</div>
           <div className="setup-subtitle">สร้างห้อง</div>
@@ -55,29 +52,10 @@ export default function SetupScreen() {
               onChange={e => setName(e.target.value)}
               maxLength={16}
               autoFocus
+              onKeyDown={e => e.key === 'Enter' && handleCreate()}
               style={{ fontSize: '1.1rem', textAlign: 'center' }}
             />
           </div>
-          <div className="section-title">Question Set</div>
-
-          {questionSet && (
-            <>
-              <div style={{ marginBottom: 12, padding: '8px 12px', background: 'var(--public-bg)', borderRadius: 8, border: '1px solid var(--public)' }}>
-                <span className="text-sm">✅ โหลด: <strong>{questionSet.name}</strong> ({questionSet.questions.length} โจทย์)</span>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
-                {questionSet.questions.map((q) => (
-                  <button
-                    key={q.id}
-                    className={`btn ${selectedQuestion?.id === q.id ? 'btn--success' : 'btn--ghost'} btn--full`}
-                    onClick={() => setSelectedQuestion(q)}
-                  >
-                    {selectedQuestion?.id === q.id ? '✓ ' : ''}{q.category ? `[${q.category}] ` : ''}โจทย์ {q.id}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
 
           {error && (
             <div style={{ marginBottom: 12, padding: '8px 12px', background: '#450a0a', borderRadius: 8, border: '1px solid var(--danger)' }}>
@@ -92,10 +70,10 @@ export default function SetupScreen() {
             <button
               className="btn btn--success btn--lg"
               style={{ flex: 1 }}
-              disabled={!questionSet || loading}
+              disabled={!name.trim() || loading}
               onClick={handleCreate}
             >
-              {loading ? 'กำลังสร้างห้อง...' : selectedQuestion ? 'สร้างห้อง!' : 'สุ่มโจทย์ + สร้างห้อง!'}
+              {loading ? 'กำลังสร้างห้อง...' : 'สร้างห้อง →'}
             </button>
           </div>
         </div>
