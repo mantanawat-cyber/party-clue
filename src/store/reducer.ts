@@ -42,6 +42,7 @@ export interface AppState {
   spyReveal: string | null;
   guessPhase: 'idle' | 'pending_penalty';
   isAnonymousGuess: boolean;
+  hasRedrawnThisTurn: boolean;
 }
 
 export const INITIAL_STATE: AppState = {
@@ -58,6 +59,7 @@ export const INITIAL_STATE: AppState = {
   spyReveal: null,
   guessPhase: 'idle',
   isAnonymousGuess: false,
+  hasRedrawnThisTurn: false,
 };
 
 // ─── Dispatch Actions ────────────────────────────────────────────────────────
@@ -320,13 +322,14 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         spyReveal: null,
         guessPhase: 'idle',
         isAnonymousGuess: false,
+        hasRedrawnThisTurn: false,
       };
     }
 
     case 'REDRAW_ACTION': {
-      if (!state.gameState) return state;
+      if (!state.gameState || state.hasRedrawnThisTurn) return state;
       const gs = redrawAction(state.gameState, action.discardInstanceId);
-      return { ...state, gameState: gs };
+      return { ...state, gameState: gs, hasRedrawnThisTurn: true };
     }
 
     case 'CLEAR_SPY_REVEAL':

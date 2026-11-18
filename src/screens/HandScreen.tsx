@@ -382,8 +382,8 @@ function MainHandView({ player }: { player: Player }) {
           )}
         </div>
 
-        {/* Redraw — free action, draw phase only */}
-        {isMyTurn && !isBlackedOut && isDrawPhase && gs.settings.allowActionRedraw && gs.actionDeck.length > 0 && player.actionHand.length > 0 && (
+        {/* Redraw — free once per turn, draw phase only */}
+        {isMyTurn && !isBlackedOut && isDrawPhase && !state.hasRedrawnThisTurn && gs.settings.allowActionRedraw && gs.actionDeck.length > 0 && player.actionHand.length > 0 && (
           <div>
             <GothicButton variant="ghost" fullWidth onClick={() => { setShowRedraw(v => !v); setSelectedRedraw(null); }}>
               {showRedraw ? '▲ ซ่อน Redraw' : '🔄 Redraw (ฟรี)'}
