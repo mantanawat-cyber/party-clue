@@ -37,7 +37,7 @@ export default function BoardScreen() {
   const isMyTurn = state.myPlayerId === currentTurnPlayer.id;
 
   const pending = gs.pendingAction;
-  const needsMyResponse = pending && (
+  const needsMyResponse = (pending && (
     pending.actorId === state.myPlayerId ||
     pending.targetId === state.myPlayerId ||
     (pending.step === 'awaiting_shutdown' &&
@@ -45,7 +45,7 @@ export default function BoardScreen() {
     (pending.step === 'awaiting_shuffle_picks' &&
       gs.players.find(p => p.id === state.myPlayerId)?.clueHand.length &&
       !pending.shufflePicks?.[state.myPlayerId!])
-  );
+  )) || (gs.hostJudgePending && state.isHost) || gs.pendingPenalty === state.myPlayerId;
 
   return (
     <div className="screen" style={{

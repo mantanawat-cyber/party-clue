@@ -73,6 +73,9 @@ export function setupGame(
     currentQuestion: question,
     winner: null,
     pendingAction: null,
+    hostJudgePending: null,
+    pendingGuessIsAnonymous: false,
+    pendingPenalty: null,
     log: [{ timestamp: Date.now(), message: 'เกมเริ่มต้นแล้ว' }],
     settings: { ...DEFAULT_SETTINGS, ...settings },
   };

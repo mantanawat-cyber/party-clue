@@ -177,8 +177,8 @@ export default function HandScreen() {
   const pending = gs.pendingAction;
 
   if (state.spyReveal) return <SpyRevealView content={state.spyReveal} />;
-  if (state.guessPhase === 'pending_penalty') return <PenaltyView player={player} />;
-  if (state.hostJudgePending) return <ManualJudgeView />;
+  if (state.guessPhase === 'pending_penalty' || gs.pendingPenalty === state.myPlayerId) return <PenaltyView player={player} />;
+  if (gs.hostJudgePending && state.isHost) return <ManualJudgeView />;
   if (pending?.step === 'awaiting_investigate_keep') return <InvestigateView />;
   if (pending?.step === 'awaiting_discard_choice') return <DiscardChoiceView />;
   if (pending?.step === 'awaiting_shuffle_picks') return <ShufflePickView />;

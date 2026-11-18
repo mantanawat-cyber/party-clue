@@ -43,7 +43,6 @@ export interface AppState {
   spyReveal: string | null;
   guessPhase: 'idle' | 'pending_penalty';
   isAnonymousGuess: boolean;
-  hostJudgePending: string | null;
 }
 
 export const INITIAL_STATE: AppState = {
@@ -60,7 +59,6 @@ export const INITIAL_STATE: AppState = {
   spyReveal: null,
   guessPhase: 'idle',
   isAnonymousGuess: false,
-  hostJudgePending: null,
 };
 
 // ─── Dispatch Actions ────────────────────────────────────────────────────────
@@ -176,7 +174,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     case 'FIREBASE_SYNC': {
       const gs = action.gameState;
       if (gs.gamePhase === 'gameover') {
-        return { ...state, gameState: gs, screen: 'gameover', spyReveal: null, guessPhase: 'idle', hostJudgePending: null };
+        return { ...state, gameState: gs, screen: 'gameover', spyReveal: null, guessPhase: 'idle' };
       }
       // Auto-transition from lobby to board when host starts the game
       if (state.screen === 'lobby' && gs.gamePhase === 'playing') {
@@ -282,8 +280,9 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         return { ...state, gameState: gs, screen: 'gameover' };
       }
 
-      if (state.gameState.settings.answerMode === 'manual') {
-        return { ...state, gameState: gs, hostJudgePending: id, isAnonymousGuess: action.isAnonymous };
+      // Manual mode: gs.hostJudgePending is set — Firebase syncs it to host device
+      if (gs.hostJudgePending) {
+        return { ...state, gameState: gs, isAnonymousGuess: false };
       }
 
       if (result === 'wrong' && !action.isAnonymous) {
@@ -305,19 +304,16 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     }
 
     case 'JUDGE_ANSWER': {
-      if (!state.gameState || !state.hostJudgePending) return state;
-      const gs = judgeAnswer(state.gameState, state.hostJudgePending, action.isCorrect);
+      if (!state.gameState?.hostJudgePending) return state;
+      const pendingId = state.gameState.hostJudgePending;
+      const gs = judgeAnswer(state.gameState, pendingId, action.isCorrect);
 
       if (action.isCorrect) {
-        return { ...state, gameState: gs, screen: 'gameover', hostJudgePending: null };
+        return { ...state, gameState: gs, screen: 'gameover' };
       }
 
-      const playerId = state.hostJudgePending;
-      const player = gs.players.find(p => p.id === playerId);
-      if (!state.isAnonymousGuess && player && player.clueHand.length > 0) {
-        return { ...state, gameState: gs, hostJudgePending: null, guessPhase: 'pending_penalty' };
-      }
-      return { ...state, gameState: gs, hostJudgePending: null, guessPhase: 'idle' };
+      // gs.pendingPenalty is set by judgeAnswer when penalty is needed
+      return { ...state, gameState: gs, guessPhase: 'idle' };
     }
 
     case 'END_TURN': {
@@ -330,7 +326,6 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         spyReveal: null,
         guessPhase: 'idle',
         isAnonymousGuess: false,
-        hostJudgePending: null,
       };
     }
 

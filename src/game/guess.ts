@@ -14,6 +14,15 @@ export function submitGuess(
   const player = state.players.find((p) => p.id === playerId);
   if (!player) return { state, result: 'wrong' };
 
+  // Manual mode: defer judgment to host
+  if (state.settings.answerMode === 'manual') {
+    const newState = addLog(
+      { ...state, hostJudgePending: playerId, pendingGuessIsAnonymous: isAnonymous },
+      `${player.name} ส่งคำตอบ — รอ Host ตัดสิน`
+    );
+    return { state: newState, result: 'wrong' };
+  }
+
   const isCorrect = checkAnswer(state, answer);
 
   if (isCorrect) {
@@ -35,8 +44,6 @@ export function submitGuess(
     return { state: newState, result: 'wrong' };
   }
 
-  // Wrong guess penalty: must reveal a clue — handled via UI (player selects which clue)
-  // If no clues in hand, skip penalty
   if (player.clueHand.length === 0) {
     newState = addLog(newState, `${player.name}: ไม่มี Clue ในมือ ไม่ต้องลงโทษ`);
     return { state: newState, result: 'no_clue_to_discard' };
@@ -57,7 +64,11 @@ export function applyWrongGuessPenalty(
   const clue = player.clueHand.find((c) => c.instanceId === clueInstanceId);
   if (!clue) return state;
 
-  const newState = makeCluePublic(state, clueInstanceId, playerId);
+  const newState = makeCluePublic(
+    { ...state, pendingPenalty: null },
+    clueInstanceId,
+    playerId,
+  );
   return addLog(newState, `${player.name} เปิดเผย Clue: "${clue.content}" เป็น Public Clue`);
 }
 
@@ -80,12 +91,27 @@ export function judgeAnswer(state: GameState, playerId: string, isCorrect: boole
   const player = state.players.find((p) => p.id === playerId);
   if (!player) return state;
 
+  const clearedState: GameState = {
+    ...state,
+    hostJudgePending: null,
+    pendingGuessIsAnonymous: false,
+  };
+
   if (isCorrect) {
     return addLog(
-      { ...state, gamePhase: 'gameover', winner: playerId },
+      { ...clearedState, gamePhase: 'gameover', winner: playerId },
       `🎉 ${player.name} ตอบถูก (ยืนยันโดย host)!`
     );
   }
 
-  return addLog(state, `${player.name} ตอบผิด (ยืนยันโดย host)`);
+  const isAnon = state.pendingGuessIsAnonymous;
+  const needsPenalty = !isAnon && player.clueHand.length > 0;
+  const judgedState = needsPenalty
+    ? { ...clearedState, pendingPenalty: playerId }
+    : clearedState;
+
+  return addLog(
+    judgedState,
+    `${player.name} ตอบผิด (ยืนยันโดย host)${isAnon ? ' — ไม่โดนโทษ (Anonymous)' : ''}`
+  );
 }
