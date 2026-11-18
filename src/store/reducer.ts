@@ -94,7 +94,8 @@ export type AppAction =
   | { type: 'JUDGE_ANSWER'; isCorrect: boolean }
   | { type: 'END_TURN' }
   | { type: 'REDRAW_ACTION'; discardInstanceId: string }
-  | { type: 'CLEAR_SPY_REVEAL' };
+  | { type: 'CLEAR_SPY_REVEAL' }
+  | { type: 'CANCEL_ACTION' };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -338,6 +339,22 @@ export function appReducer(state: AppState, action: AppAction): AppState {
 
     case 'CLEAR_SPY_REVEAL':
       return { ...state, spyReveal: null };
+
+    case 'CANCEL_ACTION': {
+      if (!state.gameState) return state;
+      const pending = state.gameState.pendingAction;
+      if (!pending) return { ...state, screen: 'hand' };
+      const updatedPlayers = state.gameState.players.map(p =>
+        p.id === pending.actorId
+          ? { ...p, actionHand: [...p.actionHand, pending.action] }
+          : p
+      );
+      return {
+        ...state,
+        gameState: { ...state.gameState, pendingAction: null, players: updatedPlayers },
+        screen: 'hand',
+      };
+    }
 
     default:
       return state;

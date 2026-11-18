@@ -376,7 +376,7 @@ function TargetSelectView() {
           </GothicButton>
         ))}
       </div>
-      <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'OPEN_HAND' })}>
+      <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'CANCEL_ACTION' })}>
         ยกเลิก
       </GothicButton>
     </SubView>
@@ -414,7 +414,7 @@ function ClueSelectView() {
           ))}
         </div>
       )}
-      <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'OPEN_HAND' })}>
+      <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'CANCEL_ACTION' })}>
         ยกเลิก
       </GothicButton>
     </SubView>
