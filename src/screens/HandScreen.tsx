@@ -9,7 +9,7 @@ import { GothicScreen, GothicPanel, GothicButton, GothicInput } from '../compone
 const ACTION_IMAGES: Record<string, string> = {
   DECODE:          '/cards/action-decode.png',
   ENCODE:          '/cards/action-encode.png',
-  SHUFFLE:         '/cards/action-shuffle.png',
+  STEAL:           '/cards/action-steal.png',
   BLACKOUT:        '/cards/action-blackout.png',
   ANONYMOUS_GUESS: '/cards/action-anonymous-guess.png',
   SPY:             '/cards/action-spy.png',
@@ -181,7 +181,7 @@ export default function HandScreen() {
   if (gs.hostJudgePending && state.isHost) return <ManualJudgeView />;
   if (pending?.step === 'awaiting_investigate_keep') return <InvestigateView />;
   if (pending?.step === 'awaiting_discard_choice') return <DiscardChoiceView />;
-  if (pending?.step === 'awaiting_shuffle_picks') return <ShufflePickView />;
+
   if (pending?.step === 'awaiting_shutdown') return <ShutdownView />;
   if (pending?.step === 'awaiting_target') return <TargetSelectView />;
   if (pending?.step === 'awaiting_clue_selection') return <ClueSelectView />;
@@ -419,8 +419,11 @@ function ClueSelectView() {
   const target = pending.targetId ? gs.players.find(p => p.id === pending.targetId) : null;
 
   const actor = gs.players.find(p => p.id === pending.actorId)!;
-  const isSwapSecondPick = pending.action.type === 'SWAP' && !!pending.selectedClueInstanceId;
-  const pickOwner = isSwapSecondPick ? target : actor;
+  const isTargetPick =
+    pending.action.type === 'SPY' ||
+    pending.action.type === 'STEAL' ||
+    (pending.action.type === 'SWAP' && !!pending.selectedClueInstanceId);
+  const pickOwner = isTargetPick ? target : actor;
   const eligible = (pickOwner?.clueHand ?? []).filter((c: ClueInstance) => {
     if (pending.action.type === 'SPY') return c.status === 'normal';
     if (pending.action.type === 'DECODE') return c.status === 'locked';
@@ -428,7 +431,7 @@ function ClueSelectView() {
     return true;
   });
 
-  const title = isSwapSecondPick ? `เลือก Clue ของ ${target?.name}` : 'เลือก Clue ของคุณ';
+  const title = isTargetPick ? `เลือก Clue ของ ${target?.name ?? '...'}` : 'เลือก Clue ของคุณ';
 
   return (
     <SubView title={pending.action.name} subtitle={title}>
@@ -556,52 +559,6 @@ function DiscardChoiceView() {
         <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'APPLY_DISCARD_CHOICE', choice: 'actions' })}>
           ทิ้ง Action {Math.min(3, target.actionHand.length)} ใบ
         </GothicButton>
-      </div>
-    </SubView>
-  );
-}
-
-// ─── Shuffle pick ────────────────────────────────────────────────────────────
-
-function ShufflePickView() {
-  const { state, dispatch } = useGame();
-  const gs = state.gameState!;
-  const pending = gs.pendingAction!;
-  const picks = pending.shufflePicks ?? {};
-  const playersWithClues = gs.players.filter(p => p.clueHand.length > 0);
-  const nextPicker = playersWithClues.find(p => !picks[p.id]);
-
-  if (!nextPicker) {
-    return (
-      <SubView title="ทุกคนเลือกแล้ว" subtitle="กด Resolve เพื่อสุ่มแจกใหม่">
-        <GothicButton variant="primary" fullWidth onClick={() => dispatch({ type: 'SKIP_SHUTDOWN' })}>
-          🔀 Shuffle ทันที
-        </GothicButton>
-      </SubView>
-    );
-  }
-
-  const amNextPicker = state.myPlayerId === nextPicker.id;
-
-  if (!amNextPicker) {
-    return (
-      <SubView title="Shuffle" subtitle={`รอ ${nextPicker.name} เลือก Clue...`}>
-        <div style={{ textAlign: 'center', color: 'rgba(200,180,140,0.5)', fontSize: '0.9rem', marginBottom: 16 }}>
-          ⏳ รอ {nextPicker.name} เลือก
-        </div>
-        <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'OPEN_BOARD' })}>
-          ← กลับ Board
-        </GothicButton>
-      </SubView>
-    );
-  }
-
-  return (
-    <SubView title="Shuffle" subtitle={`เลือก Clue 1 ใบที่จะส่งเข้า Shuffle`}>
-      <div className="card-grid">
-        {nextPicker.clueHand.map(c => (
-          <ClueCard key={c.instanceId} clue={c} onClick={() => dispatch({ type: 'SET_SHUFFLE_PICK', playerId: nextPicker.id, clueInstanceId: c.instanceId })} />
-        ))}
       </div>
     </SubView>
   );

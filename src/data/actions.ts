@@ -34,11 +34,11 @@ export const ACTION_DEFINITIONS: ActionDefinition[] = [
     quantity: 5,
   },
   {
-    id: 'def-shuffle',
-    type: 'SHUFFLE',
-    name: 'Shuffle',
-    description: 'ทุกคนส่ง Clue 1 ใบ รวมแล้วสุ่มแจกใหม่',
-    targetType: 'all_players',
+    id: 'def-steal',
+    type: 'STEAL',
+    name: 'Steal',
+    description: 'ขโมย Clue 1 ใบจากมือของผู้เล่นอื่น',
+    targetType: 'one_opponent',
     quantity: 4,
   },
   {

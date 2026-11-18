@@ -1,6 +1,6 @@
 import type { GameState, PendingAction, ActionInstance, ClueInstance } from '../models';
 import { addLog, updatePlayer, transferClue, makeCluePublic } from './utils';
-import { drawMultiple, putUnderDeck, shuffle } from './deck';
+import { drawMultiple, putUnderDeck } from './deck';
 
 // ─── Start Action ───────────────────────────────────────────────────────────
 // Called when a player selects an Action card from their hand.
@@ -41,12 +41,11 @@ function getInitialStep(action: ActionInstance): PendingAction['step'] {
     case 'DISCARD':
     case 'BLACKOUT':
     case 'SWAP':
+    case 'STEAL':
       return 'awaiting_target';
     case 'DECODE':
     case 'ENCODE':
       return 'awaiting_clue_selection';
-    case 'SHUFFLE':
-      return 'awaiting_shuffle_picks';
     case 'INVESTIGATE':
       return 'awaiting_shutdown'; // goes to investigate draw after shutdown window
     case 'ANONYMOUS_GUESS':
@@ -99,7 +98,8 @@ export function setActionTarget(state: GameState, targetId: string): GameState {
   let nextStep = pending.step;
   switch (pending.action.type) {
     case 'SPY':
-      nextStep = 'awaiting_clue_selection'; // actor picks which clue to spy
+    case 'STEAL':
+      nextStep = 'awaiting_clue_selection'; // actor picks from target's hand
       break;
     case 'DISCARD':
       nextStep = 'awaiting_shutdown';
@@ -165,7 +165,7 @@ export function resolveAction(state: GameState): GameState {
     case 'DECODE':       return resolveDecode(newState, pending);
     case 'ENCODE':       return resolveEncode(newState, pending);
     case 'SWAP':         return resolveSwap(newState, pending);
-    case 'SHUFFLE':      return resolveShuffle(newState, pending);
+    case 'STEAL':        return resolveSteal(newState, pending);
     case 'DISCARD':      return resolveDiscard(newState, pending);
     case 'BLACKOUT':     return resolveBlackout(newState, pending);
     case 'ANONYMOUS_GUESS': return resolveAnonymousGuess(newState, pending);
@@ -242,36 +242,25 @@ function resolveSwap(state: GameState, pending: PendingAction): GameState {
   return addLog(s, `🔄 ${actor.name} Swap Clue กับ ${target.name}`);
 }
 
-function resolveShuffle(state: GameState, pending: PendingAction): GameState {
-  const picks = pending.shufflePicks ?? {};
-  const contributed: { clue: ClueInstance; ownerId: string }[] = [];
+function resolveSteal(state: GameState, pending: PendingAction): GameState {
+  const actor = state.players.find((p) => p.id === pending.actorId);
+  const target = state.players.find((p) => p.id === pending.targetId);
+  const clueId = pending.selectedClueInstanceId;
+  if (!actor || !target || !clueId) return state;
 
-  // Collect all picked clues
-  let s = { ...state };
-  for (const [playerId, clueId] of Object.entries(picks)) {
-    const player = s.players.find((p) => p.id === playerId);
-    const clue = player?.clueHand.find((c) => c.instanceId === clueId);
-    if (!clue) continue;
-    contributed.push({ clue, ownerId: playerId });
-    s = updatePlayer(s, playerId, (p) => ({
-      ...p,
-      clueHand: p.clueHand.filter((c) => c.instanceId !== clueId),
-    }));
-  }
+  const clue = target.clueHand.find((c) => c.instanceId === clueId);
+  if (!clue) return addLog(state, `Steal ล้มเหลว: ไม่พบ Clue ที่เลือก`);
 
-  if (contributed.length === 0) return addLog(s, `Shuffle: ไม่มีการ์ดเข้าร่วม`);
+  let s = updatePlayer(state, target.id, (p) => ({
+    ...p,
+    clueHand: p.clueHand.filter((c) => c.instanceId !== clueId),
+  }));
+  s = updatePlayer(s, actor.id, (p) => ({
+    ...p,
+    clueHand: [...p.clueHand, { ...clue, ownerId: actor.id }],
+  }));
 
-  // Shuffle and redistribute
-  const shuffled = shuffle(contributed.map((c) => c.clue));
-  const ownerIds = shuffle(contributed.map((c) => c.ownerId));
-
-  for (let i = 0; i < shuffled.length; i++) {
-    const newOwnerId = ownerIds[i];
-    const clue = { ...shuffled[i], ownerId: newOwnerId };
-    s = updatePlayer(s, newOwnerId, (p) => ({ ...p, clueHand: [...p.clueHand, clue] }));
-  }
-
-  return addLog(s, `🔀 Shuffle เสร็จ: สุ่มแจก Clue ${shuffled.length} ใบ`);
+  return addLog(s, `🫳 ${actor.name} Steal Clue จาก ${target.name}`);
 }
 
 function resolveDiscard(state: GameState, pending: PendingAction): GameState {
@@ -390,20 +379,3 @@ export function applyInvestigateKeep(state: GameState, keepInstanceId: string): 
 }
 
 // Set shuffle picks (called per player as they submit their pick)
-export function setShufflePick(state: GameState, playerId: string, clueInstanceId: string): GameState {
-  const pending = state.pendingAction;
-  if (!pending || pending.action.type !== 'SHUFFLE') return state;
-
-  const picks = { ...(pending.shufflePicks ?? {}), [playerId]: clueInstanceId };
-  const allPlayersWithClues = state.players.filter((p) => p.clueHand.length > 0);
-  const allPicked = allPlayersWithClues.every((p) => picks[p.id]);
-
-  return {
-    ...state,
-    pendingAction: {
-      ...pending,
-      shufflePicks: picks,
-      step: allPicked ? 'awaiting_shutdown' : 'awaiting_shuffle_picks',
-    },
-  };
-}

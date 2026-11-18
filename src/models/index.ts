@@ -24,7 +24,7 @@ export type ActionType =
   | 'DECODE'
   | 'ENCODE'
   | 'SWAP'
-  | 'SHUFFLE'
+  | 'STEAL'
   | 'SHUTDOWN'
   | 'DISCARD'
   | 'BLACKOUT'
@@ -84,7 +84,6 @@ export type PendingActionStep =
   | 'awaiting_target'
   | 'awaiting_clue_selection'
   | 'awaiting_shutdown'
-  | 'awaiting_shuffle_picks'
   | 'awaiting_discard_choice' // target chooses: clue or actions
   | 'awaiting_investigate_keep'; // player picks 1 of 2 drawn clues
 
@@ -96,7 +95,6 @@ export interface PendingAction {
   selectedTargetClueInstanceId?: string;
   step: PendingActionStep;
   drawnClues?: ClueInstance[]; // for Investigate
-  shufflePicks?: Record<string, string>; // playerId → clueInstanceId
 }
 
 // ─── Log ───────────────────────────────────────────────────────────────────

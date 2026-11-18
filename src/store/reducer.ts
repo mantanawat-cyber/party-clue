@@ -9,7 +9,6 @@ import {
   useShutdown,
   setActionTarget,
   setSelectedClue,
-  setShufflePick,
   applyDiscardChoice,
   applyInvestigateKeep,
   submitGuess,
@@ -86,7 +85,6 @@ export type AppAction =
   | { type: 'USE_SHUTDOWN'; playerId: string; shutdownInstanceId: string }
   | { type: 'APPLY_DISCARD_CHOICE'; choice: 'clue' | 'actions'; clueInstanceId?: string }
   | { type: 'KEEP_INVESTIGATE'; clueInstanceId: string }
-  | { type: 'SET_SHUFFLE_PICK'; playerId: string; clueInstanceId: string }
   | { type: 'SUBMIT_GUESS'; answer: string; isAnonymous: boolean }
   | { type: 'APPLY_PENALTY'; clueInstanceId: string }
   | { type: 'JUDGE_ANSWER'; isCorrect: boolean }
@@ -258,13 +256,6 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       if (!state.gameState) return state;
       const gs = applyInvestigateKeep(state.gameState, action.clueInstanceId);
       return { ...state, gameState: gs };
-    }
-
-    case 'SET_SHUFFLE_PICK': {
-      if (!state.gameState) return state;
-      const gs = setShufflePick(state.gameState, action.playerId, action.clueInstanceId);
-      const isCurrentPlayer = gs.players[gs.currentPlayerIndex].id === state.myPlayerId;
-      return { ...state, gameState: gs, screen: isCurrentPlayer ? state.screen : 'board' };
     }
 
     case 'SUBMIT_GUESS': {
