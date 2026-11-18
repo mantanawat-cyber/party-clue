@@ -41,10 +41,7 @@ export default function BoardScreen() {
     pending.actorId === state.myPlayerId ||
     pending.targetId === state.myPlayerId ||
     (pending.step === 'awaiting_shutdown' &&
-      gs.players.find(p => p.id === state.myPlayerId)?.actionHand.some(a => a.type === 'SHUTDOWN')) ||
-    (pending.step === 'awaiting_shuffle_picks' &&
-      gs.players.find(p => p.id === state.myPlayerId)?.clueHand.length &&
-      !pending.shufflePicks?.[state.myPlayerId!])
+      gs.players.find(p => p.id === state.myPlayerId)?.actionHand.some(a => a.type === 'SHUTDOWN'))
   )) || (gs.hostJudgePending && state.isHost) || gs.pendingPenalty === state.myPlayerId;
 
   return (
