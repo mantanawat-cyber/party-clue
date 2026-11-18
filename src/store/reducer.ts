@@ -190,9 +190,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       const player = pid
         ? state.gameState.players.find(p => p.id === pid)
         : state.gameState.players[state.gameState.currentPlayerIndex];
-      let gs = state.gameState;
-      if (gs.turnPhase === 'draw') gs = drawActionPhase(gs);
-      return { ...state, screen: 'hand', gameState: gs, currentPlayer: player ?? null };
+      return { ...state, screen: 'hand', currentPlayer: player ?? null };
     }
 
     case 'DRAW_ACTION': {
@@ -229,14 +227,16 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         const gs = resolveAction(state.gameState);
         const spyLog = [...gs.log].reverse().find((l) => l.message.includes('[SPY]'));
         const spyReveal = spyLog ? spyLog.message.split(': ').slice(2).join(': ').replace(/"/g, '') : null;
-        return { ...state, gameState: gs, spyReveal };
+        const gsEnd = gs.pendingAction === null ? { ...gs, turnPhase: 'end' as const } : gs;
+        return { ...state, gameState: gsEnd, spyReveal };
       }
 
       const gs = resolveAction(state.gameState);
       if (pending.action.type === 'ANONYMOUS_GUESS') {
         return { ...state, gameState: gs, isAnonymousGuess: true };
       }
-      return { ...state, gameState: gs };
+      const gsEnd = gs.pendingAction === null ? { ...gs, turnPhase: 'end' as const } : gs;
+      return { ...state, gameState: gsEnd };
     }
 
     case 'USE_SHUTDOWN': {
@@ -248,14 +248,15 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     case 'APPLY_DISCARD_CHOICE': {
       if (!state.gameState) return state;
       const gs = applyDiscardChoice(state.gameState, action.choice, action.clueInstanceId);
-      const isCurrentPlayer = gs.players[gs.currentPlayerIndex].id === state.myPlayerId;
-      return { ...state, gameState: gs, screen: isCurrentPlayer ? state.screen : 'board' };
+      const gsEnd = { ...gs, turnPhase: 'end' as const };
+      const isCurrentPlayer = gsEnd.players[gsEnd.currentPlayerIndex].id === state.myPlayerId;
+      return { ...state, gameState: gsEnd, screen: isCurrentPlayer ? state.screen : 'board' };
     }
 
     case 'KEEP_INVESTIGATE': {
       if (!state.gameState) return state;
       const gs = applyInvestigateKeep(state.gameState, action.clueInstanceId);
-      return { ...state, gameState: gs };
+      return { ...state, gameState: { ...gs, turnPhase: 'end' } };
     }
 
     case 'SUBMIT_GUESS': {

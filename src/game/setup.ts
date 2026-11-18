@@ -46,7 +46,7 @@ export function setupGame(
     }
 
     // Draw 3 actions
-    const [actions, remainingActions] = drawMultiple(actionDeck, 3);
+    const [actions, remainingActions] = drawMultiple(actionDeck, 1);
     player.actionHand = actions;
     actionDeck = remainingActions;
   }

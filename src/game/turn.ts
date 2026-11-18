@@ -11,7 +11,7 @@ export function drawActionPhase(state: GameState): GameState {
   // Skip if hand full or deck empty
   if (player.actionHand.length >= ACTION_HAND_LIMIT || state.actionDeck.length === 0) {
     return addLog(
-      { ...state, turnPhase: 'main' },
+      { ...state, turnPhase: 'end' },
       player.actionHand.length >= ACTION_HAND_LIMIT
         ? `${player.name}: Action เต็มมือ ข้าม Draw`
         : `${player.name}: Action Deck หมด ข้าม Draw`
@@ -19,7 +19,7 @@ export function drawActionPhase(state: GameState): GameState {
   }
 
   const [drawn, remainingDeck] = drawFromDeck(state.actionDeck);
-  if (!drawn) return { ...state, turnPhase: 'main' };
+  if (!drawn) return { ...state, turnPhase: 'end' };
 
   const updatedPlayers = state.players.map((p, i) =>
     i === state.currentPlayerIndex
@@ -28,7 +28,7 @@ export function drawActionPhase(state: GameState): GameState {
   );
 
   return addLog(
-    { ...state, players: updatedPlayers, actionDeck: remainingDeck, turnPhase: 'main' },
+    { ...state, players: updatedPlayers, actionDeck: remainingDeck, turnPhase: 'end' },
     `${player.name} จั่ว Action: ${drawn.name}`
   );
 }
@@ -95,7 +95,7 @@ export function redrawAction(state: GameState, discardInstanceId: string): GameS
       players: updatedPlayers,
       actionDeck: remainingDeck,
       actionDiscard: [...state.actionDiscard, discarded],
-      turnPhase: 'end',
+      turnPhase: 'draw',
     },
     `${player.name} ทิ้ง ${discarded.name} และจั่ว ${drawn.name}`
   );

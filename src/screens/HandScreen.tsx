@@ -207,7 +207,8 @@ function MainHandView({ player }: { player: Player }) {
   const [selectedRedraw, setSelectedRedraw] = useState<string | null>(null);
   const [showRedraw, setShowRedraw] = useState(false);
 
-  const isMainPhase = gs.turnPhase === 'main';
+  const isDrawPhase = gs.turnPhase === 'draw';
+  const isEndPhase = gs.turnPhase === 'end';
   const isBlackedOut = player.isBlackedOut;
   const isMyTurn = gs.players[gs.currentPlayerIndex].id === state.myPlayerId;
   const anonCard = player.actionHand.find(a => a.type === 'ANONYMOUS_GUESS');
@@ -311,48 +312,81 @@ function MainHandView({ player }: { player: Player }) {
           )}
         </div>
 
-        {/* Action hand — grouped by category */}
+        {/* Action hand */}
         <div style={gpanel}>
           <div style={gsec}>Action Cards ({player.actionHand.length})</div>
-          {!isMyTurn || !isMainPhase || isBlackedOut ? (
-            <p style={{ color: 'rgba(200,180,140,0.4)', fontSize: '0.85rem', margin: 0 }}>
-              {!isMyTurn
-                ? '⏳ ไม่ใช่เทิร์นของคุณ'
-                : isBlackedOut
-                  ? '⚡ Blackout — ข้าม Main Phase'
-                  : gs.turnPhase === 'end'
-                    ? 'ใช้ Redraw แล้ว — กดจบเทิร์น'
-                    : 'รอ Draw Action ก่อน'}
-            </p>
-          ) : (
+
+          {/* Not my turn — view only */}
+          {!isMyTurn && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {ACTION_CATEGORIES.map(cat => {
-                const cards = player.actionHand.filter(a => cat.types.includes(a.type));
-                if (cards.length === 0) return null;
-                return (
-                  <div key={cat.label}>
-                    <div style={{ ...gsec, marginBottom: 6 }}>{cat.icon} {cat.label}</div>
-                    <div className="card-grid">
-                      {cards.map(a => (
-                        <ActionCard
-                          key={a.instanceId}
-                          action={a}
-                          onClick={() => dispatch({ type: 'PLAY_ACTION', actionInstanceId: a.instanceId })}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
+              {player.actionHand.length === 0
+                ? <p style={{ color: 'rgba(200,180,140,0.4)', fontSize: '0.85rem', margin: 0 }}>ไม่มี Action ในมือ</p>
+                : ACTION_CATEGORIES.map(cat => {
+                    const cards = player.actionHand.filter(a => cat.types.includes(a.type));
+                    if (cards.length === 0) return null;
+                    return (
+                      <div key={cat.label}>
+                        <div style={{ ...gsec, marginBottom: 6 }}>{cat.icon} {cat.label}</div>
+                        <div className="card-grid">
+                          {cards.map(a => <ActionCard key={a.instanceId} action={a} />)}
+                        </div>
+                      </div>
+                    );
+                  })
+              }
             </div>
+          )}
+
+          {/* My turn — blacked out */}
+          {isMyTurn && isBlackedOut && (
+            <p style={{ color: 'rgba(200,180,140,0.4)', fontSize: '0.85rem', margin: 0 }}>⚡ Blackout — ข้าม Main Phase</p>
+          )}
+
+          {/* My turn — draw phase: choose action */}
+          {isMyTurn && !isBlackedOut && isDrawPhase && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'DRAW_ACTION' })}>
+                🃏 จั่ว Action 1 ใบ
+              </GothicButton>
+              {player.actionHand.length > 0 && (
+                <>
+                  <div style={{ borderTop: '1px solid rgba(120,80,40,0.3)', paddingTop: 12 }}>
+                    <div style={{ ...gsec, marginBottom: 8 }}>หรือเล่นการ์ดในมือ</div>
+                    {ACTION_CATEGORIES.map(cat => {
+                      const cards = player.actionHand.filter(a => cat.types.includes(a.type));
+                      if (cards.length === 0) return null;
+                      return (
+                        <div key={cat.label} style={{ marginBottom: 10 }}>
+                          <div style={{ ...gsec, marginBottom: 6 }}>{cat.icon} {cat.label}</div>
+                          <div className="card-grid">
+                            {cards.map(a => (
+                              <ActionCard
+                                key={a.instanceId}
+                                action={a}
+                                onClick={() => dispatch({ type: 'PLAY_ACTION', actionInstanceId: a.instanceId })}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* My turn — end phase: done */}
+          {isMyTurn && !isBlackedOut && isEndPhase && (
+            <p style={{ color: 'rgba(200,180,140,0.4)', fontSize: '0.85rem', margin: 0 }}>✓ ทำแล้ว — กดจบเทิร์น</p>
           )}
         </div>
 
-        {/* Action redraw — collapsed by default */}
-        {isMyTurn && isMainPhase && !isBlackedOut && gs.settings.allowActionRedraw && gs.actionDeck.length > 0 && (
+        {/* Redraw — free action, draw phase only */}
+        {isMyTurn && !isBlackedOut && isDrawPhase && gs.settings.allowActionRedraw && gs.actionDeck.length > 0 && player.actionHand.length > 0 && (
           <div>
             <GothicButton variant="ghost" fullWidth onClick={() => { setShowRedraw(v => !v); setSelectedRedraw(null); }}>
-              {showRedraw ? '▲ ซ่อน Redraw' : '🔄 Redraw Action'}
+              {showRedraw ? '▲ ซ่อน Redraw' : '🔄 Redraw (ฟรี)'}
             </GothicButton>
             {showRedraw && (
               <div style={{ ...gpanel, marginTop: 8 }}>
@@ -377,13 +411,15 @@ function MainHandView({ player }: { player: Player }) {
           </div>
         )}
 
-        {isMyTurn && isMainPhase && !isBlackedOut && (
+        {/* Guess — counts as 1 action, draw phase only */}
+        {isMyTurn && !isBlackedOut && isDrawPhase && (
           <GothicButton variant="primary" fullWidth onClick={() => setShowGuess(true)}>
             🎯 ทายคำตอบ
           </GothicButton>
         )}
 
-        {isMyTurn && (
+        {/* End turn — only after action done */}
+        {isMyTurn && (isEndPhase || isBlackedOut) && (
           <div style={{ marginTop: 8 }}>
             <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'END_TURN' })}>
               จบเทิร์น →
