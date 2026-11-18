@@ -291,19 +291,21 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         return { ...state, gameState: gs, screen: 'gameover' };
       }
 
+      const gsEnd = { ...gs, turnPhase: 'end' as const };
+
       // Manual mode: gs.hostJudgePending is set — Firebase syncs it to host device
       if (gs.hostJudgePending) {
-        return { ...state, gameState: gs, isAnonymousGuess: false };
+        return { ...state, gameState: gsEnd, isAnonymousGuess: false };
       }
 
       if (result === 'wrong' && !action.isAnonymous) {
-        const player = gs.players.find(p => p.id === id);
+        const player = gsEnd.players.find(p => p.id === id);
         if (player && player.clueHand.length > 0) {
-          return { ...state, gameState: gs, guessPhase: 'pending_penalty', isAnonymousGuess: false };
+          return { ...state, gameState: gsEnd, guessPhase: 'pending_penalty', isAnonymousGuess: false };
         }
       }
 
-      return { ...state, gameState: gs, guessPhase: 'idle', isAnonymousGuess: false };
+      return { ...state, gameState: gsEnd, guessPhase: 'idle', isAnonymousGuess: false };
     }
 
     case 'APPLY_PENALTY': {
