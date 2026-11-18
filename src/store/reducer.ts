@@ -43,6 +43,7 @@ export interface AppState {
   guessPhase: 'idle' | 'pending_penalty';
   isAnonymousGuess: boolean;
   hasRedrawnThisTurn: boolean;
+  lastDrawnAction: import('../models').ActionInstance | null;
 }
 
 export const INITIAL_STATE: AppState = {
@@ -60,6 +61,7 @@ export const INITIAL_STATE: AppState = {
   guessPhase: 'idle',
   isAnonymousGuess: false,
   hasRedrawnThisTurn: false,
+  lastDrawnAction: null,
 };
 
 // ─── Dispatch Actions ────────────────────────────────────────────────────────
@@ -197,7 +199,11 @@ export function appReducer(state: AppState, action: AppAction): AppState {
 
     case 'DRAW_ACTION': {
       if (!state.gameState) return state;
-      return { ...state, gameState: drawActionPhase(state.gameState) };
+      const prevHand = state.gameState.players[state.gameState.currentPlayerIndex].actionHand;
+      const gs = drawActionPhase(state.gameState);
+      const newHand = gs.players[gs.currentPlayerIndex].actionHand;
+      const drawn = newHand.find(a => !prevHand.some(p => p.instanceId === a.instanceId)) ?? null;
+      return { ...state, gameState: gs, lastDrawnAction: drawn };
     }
 
     case 'PLAY_ACTION': {
@@ -323,6 +329,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         guessPhase: 'idle',
         isAnonymousGuess: false,
         hasRedrawnThisTurn: false,
+        lastDrawnAction: null,
       };
     }
 
