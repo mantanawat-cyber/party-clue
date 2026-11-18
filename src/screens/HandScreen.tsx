@@ -487,8 +487,8 @@ function ShutdownView() {
 
 function InvestigateView() {
   const { state, dispatch } = useGame();
-  const gs = state.gameState!;
-  const drawn = gs.pendingAction?.drawnClues ?? [];
+  const gs = state.gameState;
+  const drawn = gs?.pendingAction?.drawnClues ?? [];
 
   return (
     <SubView title="Investigate" subtitle="เลือก Clue 1 ใบที่จะเก็บไว้ (อีกใบจะไปใต้กอง)">
@@ -503,12 +503,12 @@ function InvestigateView() {
 
 function DiscardChoiceView() {
   const { state, dispatch } = useGame();
-  const gs = state.gameState!;
-  const pending = gs.pendingAction!;
-  const target = gs.players.find(p => p.id === pending.targetId);
+  const gs = state.gameState;
+  const pending = gs?.pendingAction;
+  const target = gs?.players.find(p => p.id === pending?.targetId);
   const [pickClue, setPickClue] = useState(false);
 
-  if (!target) return null;
+  if (!gs || !pending || !target) return null;
 
   // In multiplayer: only the target picks — actor waits
   const amTarget = state.myPlayerId === pending.targetId;
