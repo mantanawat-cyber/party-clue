@@ -198,6 +198,7 @@ function MainHandView({ player }: { player: Player }) {
   const [guessInput, setGuessInput] = useState('');
   const [useAnon, setUseAnon] = useState(false);
   const [selectedRedraw, setSelectedRedraw] = useState<string | null>(null);
+  const [showRedraw, setShowRedraw] = useState(false);
 
   const isMainPhase = gs.turnPhase === 'main';
   const isBlackedOut = player.isBlackedOut;
@@ -329,25 +330,31 @@ function MainHandView({ player }: { player: Player }) {
           )}
         </div>
 
-        {/* Action redraw */}
+        {/* Action redraw — collapsed by default */}
         {isMyTurn && isMainPhase && !isBlackedOut && gs.settings.allowActionRedraw && gs.actionDeck.length > 0 && (
-          <div style={gpanel}>
-            <div style={gsec}>ทิ้ง Action เพื่อจั่วใหม่</div>
-            <p style={{ color: 'rgba(200,180,140,0.5)', fontSize: '0.8rem', marginBottom: 8 }}>เลือก Action ที่จะทิ้ง</p>
-            <div className="card-grid" style={{ marginBottom: 10 }}>
-              {player.actionHand.map(a => (
-                <ActionCard
-                  key={a.instanceId}
-                  action={a}
-                  onClick={() => setSelectedRedraw(a.instanceId)}
-                  selected={selectedRedraw === a.instanceId}
-                />
-              ))}
-            </div>
-            {selectedRedraw && (
-              <GothicButton variant="ghost" fullWidth onClick={() => { dispatch({ type: 'REDRAW_ACTION', discardInstanceId: selectedRedraw }); setSelectedRedraw(null); }}>
-                ✓ ทิ้งแล้วจั่วใหม่
-              </GothicButton>
+          <div>
+            <GothicButton variant="ghost" fullWidth onClick={() => { setShowRedraw(v => !v); setSelectedRedraw(null); }}>
+              {showRedraw ? '▲ ซ่อน Redraw' : '🔄 Redraw Action'}
+            </GothicButton>
+            {showRedraw && (
+              <div style={{ ...gpanel, marginTop: 8 }}>
+                <div style={gsec}>เลือก Action ที่จะทิ้ง</div>
+                <div className="card-grid" style={{ marginBottom: 10 }}>
+                  {player.actionHand.map(a => (
+                    <ActionCard
+                      key={a.instanceId}
+                      action={a}
+                      onClick={() => setSelectedRedraw(a.instanceId)}
+                      selected={selectedRedraw === a.instanceId}
+                    />
+                  ))}
+                </div>
+                {selectedRedraw && (
+                  <GothicButton variant="ghost" fullWidth onClick={() => { dispatch({ type: 'REDRAW_ACTION', discardInstanceId: selectedRedraw }); setSelectedRedraw(null); setShowRedraw(false); }}>
+                    ✓ ทิ้งแล้วจั่วใหม่
+                  </GothicButton>
+                )}
+              </div>
             )}
           </div>
         )}

@@ -45,8 +45,8 @@ export function setupGame(
       player.clueHand.push({ ...lockedClue, ownerId: player.id });
     }
 
-    // Draw 5 actions
-    const [actions, remainingActions] = drawMultiple(actionDeck, 5);
+    // Draw 3 actions
+    const [actions, remainingActions] = drawMultiple(actionDeck, 3);
     player.actionHand = actions;
     actionDeck = remainingActions;
   }
