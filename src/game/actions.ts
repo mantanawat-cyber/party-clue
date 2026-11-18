@@ -300,7 +300,6 @@ export function applyDiscardChoice(
   let newState: GameState = {
     ...state,
     pendingAction: null,
-    actionDiscard: [...state.actionDiscard, pending.action],
   };
 
   if (choice === 'clue') {
@@ -374,7 +373,6 @@ export function applyInvestigateKeep(state: GameState, keepInstanceId: string): 
   let newState: GameState = {
     ...state,
     pendingAction: null,
-    actionDiscard: [...state.actionDiscard, pending.action],
   };
 
   // Add kept to player's hand

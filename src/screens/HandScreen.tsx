@@ -202,6 +202,7 @@ function MainHandView({ player }: { player: Player }) {
   const isMainPhase = gs.turnPhase === 'main';
   const isBlackedOut = player.isBlackedOut;
   const anonCard = player.actionHand.find(a => a.type === 'ANONYMOUS_GUESS');
+  const hasAnonReady = !!anonCard || state.isAnonymousGuess;
 
   function handleGuessSubmit() {
     if (!guessInput.trim()) return;
@@ -234,11 +235,11 @@ function MainHandView({ player }: { player: Player }) {
             </div>
           </div>
           <div style={gpanel}>
-            {anonCard && (
+            {hasAnonReady && (
               <div style={{ marginBottom: 12 }}>
                 <label style={{ display: 'flex', gap: 8, alignItems: 'center', cursor: 'pointer', color: '#e8d5b0', fontSize: '0.9rem' }}>
-                  <input type="checkbox" checked={useAnon} onChange={e => setUseAnon(e.target.checked)} />
-                  <span>ใช้ Anonymous Guess — ใช้การ์ด {anonCard.name}</span>
+                  <input type="checkbox" checked={useAnon || state.isAnonymousGuess} onChange={e => setUseAnon(e.target.checked)} />
+                  <span>ใช้ Anonymous Guess — {state.isAnonymousGuess ? 'การ์ดพร้อมใช้แล้ว' : `ใช้การ์ด ${anonCard!.name}`}</span>
                 </label>
               </div>
             )}
@@ -296,7 +297,11 @@ function MainHandView({ player }: { player: Player }) {
           <div style={gsec}>Action Cards ({player.actionHand.length})</div>
           {!isMainPhase || isBlackedOut ? (
             <p style={{ color: 'rgba(200,180,140,0.4)', fontSize: '0.85rem', margin: 0 }}>
-              {isBlackedOut ? '⚡ Blackout — ข้าม Main Phase' : 'รอ Draw Action ก่อน'}
+              {isBlackedOut
+                ? '⚡ Blackout — ข้าม Main Phase'
+                : gs.turnPhase === 'end'
+                  ? 'ใช้ Redraw แล้ว — กดจบเทิร์น'
+                  : 'รอ Draw Action ก่อน'}
             </p>
           ) : (
             <div className="card-grid">

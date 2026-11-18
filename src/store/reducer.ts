@@ -237,6 +237,9 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       }
 
       const gs = resolveAction(state.gameState);
+      if (pending.action.type === 'ANONYMOUS_GUESS') {
+        return { ...state, gameState: gs, isAnonymousGuess: true };
+      }
       return { ...state, gameState: gs };
     }
 
