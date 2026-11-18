@@ -70,13 +70,35 @@ export async function writeGameState(roomId: string, gameState: GameState): Prom
 }
 
 // Listen to game state changes
+// Firebase RTDB serializes empty arrays as null — restore them before use
+function normalizeGameState(raw: GameState): GameState {
+  return {
+    ...raw,
+    actionDeck: raw.actionDeck ?? [],
+    actionDiscard: raw.actionDiscard ?? [],
+    clueDeck: raw.clueDeck ?? [],
+    publicClues: raw.publicClues ?? [],
+    log: raw.log ?? [],
+    claimedPlayerIds: raw.claimedPlayerIds ?? [],
+    players: (raw.players ?? []).map(p => ({
+      ...p,
+      actionHand: p.actionHand ?? [],
+      clueHand: p.clueHand ?? [],
+    })),
+    pendingAction: raw.pendingAction ? {
+      ...raw.pendingAction,
+      drawnClues: raw.pendingAction.drawnClues ?? [],
+    } : null,
+  };
+}
+
 export function listenToGameState(
   roomId: string,
   onUpdate: (gs: GameState) => void,
 ): () => void {
   const r = stateRef(roomId);
   onValue(r, (snap) => {
-    if (snap.exists()) onUpdate(snap.val() as GameState);
+    if (snap.exists()) onUpdate(normalizeGameState(snap.val() as GameState));
   });
   return () => off(r);
 }
