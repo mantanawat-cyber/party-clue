@@ -27,10 +27,10 @@ const ACTION_CATEGORIES: { label: string; icon: string; types: string[] }[] = [
 ];
 
 function clueTextSize(len: number): string {
-  if (len < 30) return '1rem';
-  if (len < 50) return '0.88rem';
-  if (len < 70) return '0.78rem';
-  return '0.68rem';
+  if (len < 20) return '0.88rem';
+  if (len < 35) return '0.78rem';
+  if (len < 55) return '0.68rem';
+  return '0.58rem';
 }
 
 // ─── Gothic style constants ───────────────────────────────────────────────────
@@ -92,11 +92,11 @@ function ClueCard({ clue, onClick, selected }: { clue: ClueInstance; onClick?: (
         draggable={false}
       />
       <div style={{
-        position: 'absolute', top: '61%', left: '10%', right: '10%', height: '23%',
+        position: 'absolute', top: '56%', left: '9%', right: '9%', height: '32%',
         display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center',
-        overflow: 'hidden', fontSize: clueTextSize(text.length), lineHeight: 1.35,
+        overflow: 'hidden', fontSize: clueTextSize(text.length), lineHeight: 1.3,
         color: isLocked ? '#8b5cf6' : '#3b2000', fontWeight: isLocked ? 500 : 600,
-        padding: '0 4px', wordBreak: 'break-word',
+        padding: '2px 4px', wordBreak: 'break-word',
       }}>
         {text}
       </div>
