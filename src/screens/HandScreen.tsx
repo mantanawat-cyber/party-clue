@@ -19,6 +19,13 @@ const ACTION_IMAGES: Record<string, string> = {
   DISCARD:         '/cards/action-discard.png',
 };
 
+const ACTION_CATEGORIES: { label: string; icon: string; types: string[] }[] = [
+  { label: 'ข้อมูล',   icon: '🔍', types: ['SPY', 'INVESTIGATE'] },
+  { label: 'เบาะแส',   icon: '🃏', types: ['DECODE', 'ENCODE', 'SWAP'] },
+  { label: 'โจมตี',    icon: '⚔️', types: ['STEAL', 'DISCARD', 'BLACKOUT'] },
+  { label: 'พิเศษ',    icon: '🛡', types: ['SHUTDOWN', 'ANONYMOUS_GUESS'] },
+];
+
 function clueTextSize(len: number): string {
   if (len < 30) return '1rem';
   if (len < 50) return '0.88rem';
@@ -304,7 +311,7 @@ function MainHandView({ player }: { player: Player }) {
           )}
         </div>
 
-        {/* Action hand */}
+        {/* Action hand — grouped by category */}
         <div style={gpanel}>
           <div style={gsec}>Action Cards ({player.actionHand.length})</div>
           {!isMyTurn || !isMainPhase || isBlackedOut ? (
@@ -318,14 +325,25 @@ function MainHandView({ player }: { player: Player }) {
                     : 'รอ Draw Action ก่อน'}
             </p>
           ) : (
-            <div className="card-grid">
-              {player.actionHand.map(a => (
-                <ActionCard
-                  key={a.instanceId}
-                  action={a}
-                  onClick={() => dispatch({ type: 'PLAY_ACTION', actionInstanceId: a.instanceId })}
-                />
-              ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {ACTION_CATEGORIES.map(cat => {
+                const cards = player.actionHand.filter(a => cat.types.includes(a.type));
+                if (cards.length === 0) return null;
+                return (
+                  <div key={cat.label}>
+                    <div style={{ ...gsec, marginBottom: 6 }}>{cat.icon} {cat.label}</div>
+                    <div className="card-grid">
+                      {cards.map(a => (
+                        <ActionCard
+                          key={a.instanceId}
+                          action={a}
+                          onClick={() => dispatch({ type: 'PLAY_ACTION', actionInstanceId: a.instanceId })}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
