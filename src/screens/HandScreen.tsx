@@ -505,8 +505,25 @@ function DiscardChoiceView() {
   const { state, dispatch } = useGame();
   const gs = state.gameState!;
   const pending = gs.pendingAction!;
-  const target = gs.players.find(p => p.id === pending.targetId)!;
+  const target = gs.players.find(p => p.id === pending.targetId);
   const [pickClue, setPickClue] = useState(false);
+
+  if (!target) return null;
+
+  // In multiplayer: only the target picks — actor waits
+  const amTarget = state.myPlayerId === pending.targetId;
+  if (!amTarget) {
+    return (
+      <SubView title="Discard" subtitle={`รอ ${target.name} ตัดสินใจ...`}>
+        <div style={{ textAlign: 'center', color: 'rgba(200,180,140,0.5)', fontSize: '0.9rem', marginBottom: 16 }}>
+          ⏳ รอ {target.name} เลือก
+        </div>
+        <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'OPEN_BOARD' })}>
+          ← กลับ Board
+        </GothicButton>
+      </SubView>
+    );
+  }
 
   if (pickClue) {
     return (
@@ -557,8 +574,23 @@ function ShufflePickView() {
     );
   }
 
+  const amNextPicker = state.myPlayerId === nextPicker.id;
+
+  if (!amNextPicker) {
+    return (
+      <SubView title="Shuffle" subtitle={`รอ ${nextPicker.name} เลือก Clue...`}>
+        <div style={{ textAlign: 'center', color: 'rgba(200,180,140,0.5)', fontSize: '0.9rem', marginBottom: 16 }}>
+          ⏳ รอ {nextPicker.name} เลือก
+        </div>
+        <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'OPEN_BOARD' })}>
+          ← กลับ Board
+        </GothicButton>
+      </SubView>
+    );
+  }
+
   return (
-    <SubView title="Shuffle" subtitle={`ส่งอุปกรณ์ให้ ${nextPicker.name} — เลือก Clue 1 ใบที่จะส่งเข้า Shuffle`}>
+    <SubView title="Shuffle" subtitle={`เลือก Clue 1 ใบที่จะส่งเข้า Shuffle`}>
       <div className="card-grid">
         {nextPicker.clueHand.map(c => (
           <ClueCard key={c.instanceId} clue={c} onClick={() => dispatch({ type: 'SET_SHUFFLE_PICK', playerId: nextPicker.id, clueInstanceId: c.instanceId })} />
