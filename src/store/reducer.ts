@@ -250,7 +250,8 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     case 'APPLY_DISCARD_CHOICE': {
       if (!state.gameState) return state;
       const gs = applyDiscardChoice(state.gameState, action.choice, action.clueInstanceId);
-      return { ...state, gameState: gs };
+      const isCurrentPlayer = gs.players[gs.currentPlayerIndex].id === state.myPlayerId;
+      return { ...state, gameState: gs, screen: isCurrentPlayer ? state.screen : 'board' };
     }
 
     case 'KEEP_INVESTIGATE': {
@@ -262,7 +263,8 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     case 'SET_SHUFFLE_PICK': {
       if (!state.gameState) return state;
       const gs = setShufflePick(state.gameState, action.playerId, action.clueInstanceId);
-      return { ...state, gameState: gs };
+      const isCurrentPlayer = gs.players[gs.currentPlayerIndex].id === state.myPlayerId;
+      return { ...state, gameState: gs, screen: isCurrentPlayer ? state.screen : 'board' };
     }
 
     case 'SUBMIT_GUESS': {

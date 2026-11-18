@@ -201,6 +201,7 @@ function MainHandView({ player }: { player: Player }) {
 
   const isMainPhase = gs.turnPhase === 'main';
   const isBlackedOut = player.isBlackedOut;
+  const isMyTurn = gs.players[gs.currentPlayerIndex].id === state.myPlayerId;
   const anonCard = player.actionHand.find(a => a.type === 'ANONYMOUS_GUESS');
   const hasAnonReady = !!anonCard || state.isAnonymousGuess;
 
@@ -305,13 +306,15 @@ function MainHandView({ player }: { player: Player }) {
         {/* Action hand */}
         <div style={gpanel}>
           <div style={gsec}>Action Cards ({player.actionHand.length})</div>
-          {!isMainPhase || isBlackedOut ? (
+          {!isMyTurn || !isMainPhase || isBlackedOut ? (
             <p style={{ color: 'rgba(200,180,140,0.4)', fontSize: '0.85rem', margin: 0 }}>
-              {isBlackedOut
-                ? '⚡ Blackout — ข้าม Main Phase'
-                : gs.turnPhase === 'end'
-                  ? 'ใช้ Redraw แล้ว — กดจบเทิร์น'
-                  : 'รอ Draw Action ก่อน'}
+              {!isMyTurn
+                ? '⏳ ไม่ใช่เทิร์นของคุณ'
+                : isBlackedOut
+                  ? '⚡ Blackout — ข้าม Main Phase'
+                  : gs.turnPhase === 'end'
+                    ? 'ใช้ Redraw แล้ว — กดจบเทิร์น'
+                    : 'รอ Draw Action ก่อน'}
             </p>
           ) : (
             <div className="card-grid">
@@ -327,7 +330,7 @@ function MainHandView({ player }: { player: Player }) {
         </div>
 
         {/* Action redraw */}
-        {isMainPhase && !isBlackedOut && gs.settings.allowActionRedraw && gs.actionDeck.length > 0 && (
+        {isMyTurn && isMainPhase && !isBlackedOut && gs.settings.allowActionRedraw && gs.actionDeck.length > 0 && (
           <div style={gpanel}>
             <div style={gsec}>ทิ้ง Action เพื่อจั่วใหม่</div>
             <p style={{ color: 'rgba(200,180,140,0.5)', fontSize: '0.8rem', marginBottom: 8 }}>เลือก Action ที่จะทิ้ง</p>
@@ -349,17 +352,19 @@ function MainHandView({ player }: { player: Player }) {
           </div>
         )}
 
-        {isMainPhase && !isBlackedOut && (
+        {isMyTurn && isMainPhase && !isBlackedOut && (
           <GothicButton variant="primary" fullWidth onClick={() => setShowGuess(true)}>
             🎯 ทายคำตอบ
           </GothicButton>
         )}
 
-        <div style={{ marginTop: 8 }}>
-          <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'END_TURN' })}>
-            จบเทิร์น →
-          </GothicButton>
-        </div>
+        {isMyTurn && (
+          <div style={{ marginTop: 8 }}>
+            <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'END_TURN' })}>
+              จบเทิร์น →
+            </GothicButton>
+          </div>
+        )}
 
         <div style={{ marginTop: 8 }}>
           <GothicButton variant="ghost" onClick={() => dispatch({ type: 'OPEN_BOARD' })}>
