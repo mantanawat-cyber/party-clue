@@ -28,8 +28,8 @@ export default function HomeScreen() {
           fontSize: 'clamp(2.2rem, 10vw, 3.2rem)',
           fontWeight: 900,
           letterSpacing: '0.08em',
-          color: '#f5e6b8',
-          textShadow: '0 0 20px rgba(255,200,80,0.8), 0 0 40px rgba(255,160,40,0.5), 2px 2px 4px rgba(0,0,0,0.9)',
+          color: '#c0392b',
+          textShadow: '0 0 16px rgba(200,50,30,0.7), 1px 1px 3px rgba(0,0,0,0.9)',
           lineHeight: 1.1,
         }}>
           PARTY
@@ -38,8 +38,8 @@ export default function HomeScreen() {
           fontSize: 'clamp(2.8rem, 13vw, 4.2rem)',
           fontWeight: 900,
           letterSpacing: '0.12em',
-          color: '#ffd97d',
-          textShadow: '0 0 24px rgba(255,180,40,0.9), 0 0 50px rgba(255,120,20,0.6), 2px 2px 6px rgba(0,0,0,0.9)',
+          color: '#c0392b',
+          textShadow: '0 0 20px rgba(200,50,30,0.8), 2px 2px 6px rgba(0,0,0,0.9)',
           lineHeight: 1,
           marginTop: -4,
         }}>
@@ -94,19 +94,19 @@ function GameButton({ children, onClick, primary }: {
         fontWeight: 700,
         letterSpacing: '0.06em',
         fontFamily: "'Cinzel', serif",
-        color: primary ? '#1a0a00' : '#f5e6b8',
+        color: '#f5e6b8',
         background: primary
-          ? 'linear-gradient(135deg, #f5c842 0%, #e8973a 50%, #d4720a 100%)'
+          ? 'linear-gradient(135deg, #8b1a1a 0%, #c0392b 60%, #962020 100%)'
           : 'rgba(10,5,20,0.65)',
         border: primary
-          ? '2px solid rgba(255,220,100,0.8)'
+          ? '1px solid rgba(200,80,60,0.5)'
           : '1px solid rgba(180,140,80,0.5)',
         borderRadius: 8,
         cursor: 'pointer',
         boxShadow: primary
-          ? '0 0 16px rgba(255,180,40,0.5), inset 0 1px 0 rgba(255,255,200,0.3)'
+          ? '0 0 12px rgba(180,40,30,0.4), inset 0 1px 0 rgba(255,180,160,0.15)'
           : '0 2px 8px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
-        textShadow: primary ? 'none' : '0 1px 3px rgba(0,0,0,0.8)',
+        textShadow: '0 1px 3px rgba(0,0,0,0.8)',
         transition: 'transform 0.1s, box-shadow 0.1s',
       }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
