@@ -206,7 +206,7 @@ function MainHandView({ player }: { player: Player }) {
 
   function handleGuessSubmit() {
     if (!guessInput.trim()) return;
-    dispatch({ type: 'SUBMIT_GUESS', answer: guessInput.trim(), isAnonymous: useAnon });
+    dispatch({ type: 'SUBMIT_GUESS', answer: guessInput.trim(), isAnonymous: useAnon || state.isAnonymousGuess });
     setGuessInput('');
     setShowGuess(false);
   }
@@ -238,8 +238,18 @@ function MainHandView({ player }: { player: Player }) {
             {hasAnonReady && (
               <div style={{ marginBottom: 12 }}>
                 <label style={{ display: 'flex', gap: 8, alignItems: 'center', cursor: 'pointer', color: '#e8d5b0', fontSize: '0.9rem' }}>
-                  <input type="checkbox" checked={useAnon || state.isAnonymousGuess} onChange={e => setUseAnon(e.target.checked)} />
-                  <span>ใช้ Anonymous Guess — {state.isAnonymousGuess ? 'การ์ดพร้อมใช้แล้ว' : `ใช้การ์ด ${anonCard!.name}`}</span>
+                  <input
+                    type="checkbox"
+                    checked={state.isAnonymousGuess ? true : useAnon}
+                    disabled={state.isAnonymousGuess}
+                    onChange={e => !state.isAnonymousGuess && setUseAnon(e.target.checked)}
+                  />
+                  <span>
+                    Anonymous Guess
+                    {state.isAnonymousGuess
+                      ? ' — การ์ดถูกใช้แล้ว (บังคับ)'
+                      : ` — ใช้การ์ด ${anonCard!.name}`}
+                  </span>
                 </label>
               </div>
             )}
