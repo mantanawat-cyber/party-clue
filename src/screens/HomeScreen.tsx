@@ -4,30 +4,115 @@ export default function HomeScreen() {
   const { dispatch } = useGame();
 
   return (
-    <div className="screen-center">
-      <div className="container" style={{ maxWidth: 400 }}>
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div className="setup-title">🃏 Party Clue</div>
-          <div className="setup-subtitle">Deduction + Take That Party Game</div>
-        </div>
+    <div style={{
+      position: 'fixed', inset: 0,
+      backgroundImage: 'url(/cards/home-bg.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center top',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      fontFamily: "'Cinzel', serif",
+    }}>
+      {/* Top gradient overlay */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 30%, transparent 55%, rgba(0,0,0,0.75) 100%)',
+        pointerEvents: 'none',
+      }} />
 
-        <div className="panel">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <button
-              className="btn btn--primary btn--lg btn--full"
-              onClick={() => dispatch({ type: 'GO_SETUP' })}
-            >
-              🏠 สร้างห้อง (Host)
-            </button>
-            <button
-              className="btn btn--ghost btn--lg btn--full"
-              onClick={() => dispatch({ type: 'GO_JOIN' })}
-            >
-              🔑 เข้าร่วมด้วย Code
-            </button>
-          </div>
+      {/* Title */}
+      <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', paddingTop: 'max(48px, env(safe-area-inset-top, 0px) + 32px)' }}>
+        <div style={{
+          fontSize: 'clamp(2.2rem, 10vw, 3.2rem)',
+          fontWeight: 900,
+          letterSpacing: '0.08em',
+          color: '#f5e6b8',
+          textShadow: '0 0 20px rgba(255,200,80,0.8), 0 0 40px rgba(255,160,40,0.5), 2px 2px 4px rgba(0,0,0,0.9)',
+          lineHeight: 1.1,
+        }}>
+          PARTY
+        </div>
+        <div style={{
+          fontSize: 'clamp(2.8rem, 13vw, 4.2rem)',
+          fontWeight: 900,
+          letterSpacing: '0.12em',
+          color: '#ffd97d',
+          textShadow: '0 0 24px rgba(255,180,40,0.9), 0 0 50px rgba(255,120,20,0.6), 2px 2px 6px rgba(0,0,0,0.9)',
+          lineHeight: 1,
+          marginTop: -4,
+        }}>
+          CLUE
+        </div>
+        <div style={{
+          fontSize: 'clamp(0.7rem, 3vw, 0.9rem)',
+          letterSpacing: '0.3em',
+          color: 'rgba(220,200,160,0.85)',
+          textTransform: 'uppercase',
+          marginTop: 6,
+          textShadow: '0 1px 4px rgba(0,0,0,0.8)',
+        }}>
+          Deduction Card Game
         </div>
       </div>
+
+      {/* Buttons */}
+      <div style={{
+        position: 'relative', zIndex: 1,
+        width: '100%', maxWidth: 360,
+        padding: '0 24px',
+        paddingBottom: 'max(32px, env(safe-area-inset-bottom, 0px) + 24px)',
+        display: 'flex', flexDirection: 'column', gap: 12,
+      }}>
+        <GameButton
+          onClick={() => dispatch({ type: 'GO_SETUP' })}
+          primary
+        >
+          🏠 สร้างห้อง
+        </GameButton>
+        <GameButton onClick={() => dispatch({ type: 'GO_JOIN' })}>
+          🔑 เข้าร่วมด้วย Code
+        </GameButton>
+      </div>
     </div>
+  );
+}
+
+function GameButton({ children, onClick, primary }: {
+  children: React.ReactNode;
+  onClick: () => void;
+  primary?: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        width: '100%',
+        padding: '14px 20px',
+        fontSize: '1.05rem',
+        fontWeight: 700,
+        letterSpacing: '0.06em',
+        fontFamily: "'Cinzel', serif",
+        color: primary ? '#1a0a00' : '#f5e6b8',
+        background: primary
+          ? 'linear-gradient(135deg, #f5c842 0%, #e8973a 50%, #d4720a 100%)'
+          : 'rgba(10,5,20,0.65)',
+        border: primary
+          ? '2px solid rgba(255,220,100,0.8)'
+          : '1px solid rgba(180,140,80,0.5)',
+        borderRadius: 8,
+        cursor: 'pointer',
+        boxShadow: primary
+          ? '0 0 16px rgba(255,180,40,0.5), inset 0 1px 0 rgba(255,255,200,0.3)'
+          : '0 2px 8px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
+        textShadow: primary ? 'none' : '0 1px 3px rgba(0,0,0,0.8)',
+        transition: 'transform 0.1s, box-shadow 0.1s',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+    >
+      {children}
+    </button>
   );
 }
