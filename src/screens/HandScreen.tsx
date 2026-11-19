@@ -545,8 +545,10 @@ function ShutdownView() {
   const pending = gs.pendingAction!;
   const [shutdownWho, setShutdownWho] = useState<string | null>(null);
 
+  const isActor = state.myPlayerId === pending.actorId;
   const others = gs.players.filter(p => p.id !== pending.actorId);
   const actor = gs.players.find(p => p.id === pending.actorId)!;
+  const myShutdownCards = gs.players.find(p => p.id === state.myPlayerId)?.actionHand.filter(a => a.type === 'SHUTDOWN') ?? [];
 
   if (shutdownWho) {
     const whoPlayer = gs.players.find(p => p.id === shutdownWho)!;
@@ -563,18 +565,45 @@ function ShutdownView() {
     );
   }
 
-  return (
-    <SubView title={`⚠️ ${actor.name} เล่น ${pending.action.name}`} subtitle="มีใครต้องการใช้ Shutdown ไหม?">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
-        {others.filter(p => p.actionHand.some(a => a.type === 'SHUTDOWN')).map(p => (
-          <GothicButton key={p.id} variant="primary" fullWidth onClick={() => setShutdownWho(p.id)}>
-            ⛔ {p.name} ใช้ Shutdown
+  // Actor: sees all shutdown options + proceed button
+  if (isActor) {
+    return (
+      <SubView title={`⚠️ ${pending.action.name}`} subtitle="มีใครต้องการใช้ Shutdown ไหม?">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
+          {others.filter(p => p.actionHand.some(a => a.type === 'SHUTDOWN')).map(p => (
+            <GothicButton key={p.id} variant="primary" fullWidth onClick={() => setShutdownWho(p.id)}>
+              ⛔ {p.name} ใช้ Shutdown
+            </GothicButton>
+          ))}
+        </div>
+        <GothicButton variant="primary" fullWidth onClick={() => dispatch({ type: 'SKIP_SHUTDOWN' })}>
+          {pending.action.type === 'SPY' ? 'เปิดเผยผล SPY →' : 'ไม่มี — ดำเนินการต่อ ✓'}
+        </GothicButton>
+      </SubView>
+    );
+  }
+
+  // Non-actor: sees only their own shutdown option, or a waiting message
+  if (myShutdownCards.length > 0) {
+    return (
+      <SubView title={`⚠️ ${actor.name} เล่น ${pending.action.name}`} subtitle="คุณมี Shutdown — ใช้ไหม?">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
+          <GothicButton variant="primary" fullWidth onClick={() => setShutdownWho(state.myPlayerId!)}>
+            ⛔ ใช้ Shutdown ของฉัน
           </GothicButton>
-        ))}
-      </div>
-      <GothicButton variant="primary" fullWidth onClick={() => dispatch({ type: 'SKIP_SHUTDOWN' })}>
-        ไม่มี — ดำเนินการต่อ ✓
-      </GothicButton>
+        </div>
+        <p style={{ fontSize: '0.8rem', color: 'rgba(200,180,140,0.5)', margin: 0, textAlign: 'center' }}>
+          รอ {actor.name} ดำเนินการต่อ...
+        </p>
+      </SubView>
+    );
+  }
+
+  return (
+    <SubView title={`⚠️ ${actor.name} เล่น ${pending.action.name}`} subtitle="รอดำเนินการ...">
+      <p style={{ fontSize: '0.85rem', color: 'rgba(200,180,140,0.5)', margin: 0, textAlign: 'center' }}>
+        รอ {actor.name} ยืนยันว่าไม่มีใช้ Shutdown
+      </p>
     </SubView>
   );
 }
