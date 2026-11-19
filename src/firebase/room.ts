@@ -87,6 +87,7 @@ function normalizeGameState(raw: GameState): GameState {
       clueHand: p.clueHand ?? [],
     })),
     spyResult: raw.spyResult ?? null,
+    lastShutdown: raw.lastShutdown ?? null,
     pendingAction: raw.pendingAction ? {
       ...raw.pendingAction,
       drawnClues: raw.pendingAction.drawnClues ?? [],

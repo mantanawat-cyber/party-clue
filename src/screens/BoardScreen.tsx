@@ -59,6 +59,7 @@ export default function BoardScreen() {
   const gs = state.gameState;
   const [toast, setToast] = useState<string | null>(null);
   const seenActionRef = useRef<string | null>(null);
+  const seenShutdownRef = useRef<string | null>(null);
 
   const pending = gs?.pendingAction ?? null;
 
@@ -84,6 +85,28 @@ export default function BoardScreen() {
       try { navigator.vibrate?.([200, 80, 200]); } catch {}
     }
   }, [pending?.action.instanceId]);
+
+  useEffect(() => {
+    const sd = gs?.lastShutdown;
+    if (!sd || !state.myPlayerId) return;
+    const key = `${sd.byPlayerId}-${sd.cancelledActorId}-${sd.actionName}`;
+    if (seenShutdownRef.current === key) return;
+    seenShutdownRef.current = key;
+
+    const shutdownName = gs!.players.find(p => p.id === sd.byPlayerId)?.name ?? '???';
+    const actorName = gs!.players.find(p => p.id === sd.cancelledActorId)?.name ?? '???';
+
+    let msg: string;
+    if (state.myPlayerId === sd.byPlayerId) {
+      msg = `✅ คุณ Shutdown ${sd.actionName} ของ ${actorName} สำเร็จ!`;
+    } else if (state.myPlayerId === sd.cancelledActorId) {
+      msg = `⛔ ${shutdownName} Shutdown ${sd.actionName} ของคุณ!`;
+    } else {
+      msg = `⛔ ${shutdownName} Shutdown ${sd.actionName} ของ ${actorName}`;
+    }
+    setToast(msg);
+    try { navigator.vibrate?.([100, 50, 100]); } catch {}
+  }, [gs?.lastShutdown]);
 
   if (!gs) return null;
 

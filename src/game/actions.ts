@@ -82,6 +82,11 @@ export function useShutdown(state: GameState, playerId: string, shutdownInstance
       state.pendingAction.action,
       shutdown,
     ],
+    lastShutdown: {
+      byPlayerId: playerId,
+      cancelledActorId: state.pendingAction.actorId,
+      actionName: state.pendingAction.action.name,
+    },
   };
 
   return addLog(newState, `${player.name} ใช้ Shutdown! ยกเลิก ${state.pendingAction.action.name}`);

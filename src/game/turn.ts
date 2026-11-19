@@ -75,6 +75,7 @@ export function endTurn(state: GameState): GameState {
     turnNumber: nextIndex === 0 ? state.turnNumber + 1 : state.turnNumber,
     pendingAction: null,
     spyResult: null,
+    lastShutdown: null,
   };
 
   next = addLog(next, `ถึงตา ${nextPlayer.name}${isBlackedOut ? ' (Blacked Out — ข้าม Main Phase)' : ''}`);
