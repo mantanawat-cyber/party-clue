@@ -240,22 +240,30 @@ export default function BoardScreen() {
           </div>
         </div>
 
-        {/* Open hand button */}
-        {(isMyTurn || needsMyResponse) && (
-          <button
-            onClick={() => dispatch({ type: 'OPEN_HAND' })}
-            style={{
-              width: '100%', padding: '14px 20px',
-              fontFamily: "'Cinzel', serif", fontSize: '1rem', fontWeight: 700, letterSpacing: '0.06em',
-              borderRadius: 6, cursor: 'pointer',
+        {/* Open hand button — always visible; urgent style when action needed */}
+        <button
+          onClick={() => dispatch({ type: 'OPEN_HAND' })}
+          style={{
+            width: '100%', padding: '14px 20px',
+            fontFamily: "'Cinzel', serif", fontSize: '1rem', fontWeight: 700, letterSpacing: '0.06em',
+            borderRadius: 6, cursor: 'pointer',
+            ...(needsMyResponse ? {
               background: 'linear-gradient(135deg, #8b1a1a 0%, #c0392b 60%, #962020 100%)',
               color: '#f5e6b8', border: '1px solid rgba(200,80,60,0.5)',
               boxShadow: '0 0 12px rgba(180,40,30,0.4), inset 0 1px 0 rgba(255,180,160,0.15)',
-            }}
-          >
-            {needsMyResponse ? '⚠️ ตอบสนองเลย →' : '🃏 เปิดมือของฉัน →'}
-          </button>
-        )}
+            } : isMyTurn ? {
+              background: 'linear-gradient(135deg, #8b1a1a 0%, #c0392b 60%, #962020 100%)',
+              color: '#f5e6b8', border: '1px solid rgba(200,80,60,0.5)',
+              boxShadow: '0 0 12px rgba(180,40,30,0.4), inset 0 1px 0 rgba(255,180,160,0.15)',
+            } : {
+              background: 'rgba(255,255,255,0.04)',
+              color: 'rgba(200,180,140,0.7)', border: '1px solid rgba(120,80,40,0.3)',
+              boxShadow: 'none',
+            }),
+          }}
+        >
+          {needsMyResponse ? '⚠️ ตอบสนองเลย →' : '🃏 ดูมือของฉัน'}
+        </button>
       </div>
     </div>
   );
