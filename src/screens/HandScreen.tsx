@@ -191,9 +191,11 @@ export default function HandScreen() {
   if (pending?.step === 'awaiting_investigate_keep') return <InvestigateView />;
   if (pending?.step === 'awaiting_discard_choice') return <DiscardChoiceView />;
 
+  const isActor = pending?.actorId === state.myPlayerId;
+
   if (pending?.step === 'awaiting_shutdown') return <ShutdownView />;
-  if (pending?.step === 'awaiting_target') return <TargetSelectView />;
-  if (pending?.step === 'awaiting_clue_selection') return <ClueSelectView />;
+  if (pending?.step === 'awaiting_target' && isActor) return <TargetSelectView />;
+  if (pending?.step === 'awaiting_clue_selection' && isActor) return <ClueSelectView />;
 
   return <MainHandView player={player} />;
 }
