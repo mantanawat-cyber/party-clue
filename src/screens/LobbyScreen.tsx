@@ -95,7 +95,7 @@ export default function LobbyScreen() {
         </div>
 
         <div style={{ marginTop: 12 }}>
-          <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'GO_HOWTOPLAY' })}>
+          <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'GO_HOWTOPLAY', from: 'lobby' })}>
             📖 วิธีเล่น
           </GothicButton>
         </div>

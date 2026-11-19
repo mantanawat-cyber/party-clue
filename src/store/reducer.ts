@@ -45,6 +45,7 @@ export interface AppState {
   isAnonymousGuess: boolean;
   hasRedrawnThisTurn: boolean;
   lastDrawnCard: { kind: 'action'; card: import('../models').ActionInstance } | { kind: 'clue'; card: import('../models').ClueInstance } | null;
+  prevScreen: Screen | null;
 }
 
 export const INITIAL_STATE: AppState = {
@@ -63,6 +64,7 @@ export const INITIAL_STATE: AppState = {
   isAnonymousGuess: false,
   hasRedrawnThisTurn: false,
   lastDrawnCard: null,
+  prevScreen: null,
 };
 
 // ─── Dispatch Actions ────────────────────────────────────────────────────────
@@ -97,7 +99,7 @@ export type AppAction =
   | { type: 'REDRAW_ACTION'; discardInstanceId: string }
   | { type: 'CLEAR_SPY_REVEAL' }
   | { type: 'CANCEL_ACTION' }
-  | { type: 'GO_HOWTOPLAY' }
+  | { type: 'GO_HOWTOPLAY'; from: Screen }
   | { type: 'GO_BACK_HOWTOPLAY' };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -357,10 +359,10 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, spyReveal: null };
 
     case 'GO_HOWTOPLAY':
-      return { ...state, screen: 'howtoplay' };
+      return { ...state, screen: 'howtoplay', prevScreen: action.from };
 
     case 'GO_BACK_HOWTOPLAY':
-      return { ...state, screen: state.gameState ? 'lobby' : 'home' };
+      return { ...state, screen: state.prevScreen ?? 'home', prevScreen: null };
 
     case 'CANCEL_ACTION': {
       if (!state.gameState) return state;
