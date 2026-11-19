@@ -201,6 +201,60 @@ export default function HandScreen() {
   return <MainHandView player={player} />;
 }
 
+// ─── Status Banner ───────────────────────────────────────────────────────────
+
+function StatusBanner() {
+  const { state } = useGame();
+  const gs = state.gameState!;
+  const pending = gs.pendingAction;
+  const isMyTurn = gs.players[gs.currentPlayerIndex].id === state.myPlayerId;
+  const isActor = pending?.actorId === state.myPlayerId;
+  const isTarget = pending?.targetId === state.myPlayerId;
+  const myHasShutdown = gs.players.find(p => p.id === state.myPlayerId)?.actionHand.some(a => a.type === 'SHUTDOWN') ?? false;
+  const actorName = gs.players.find(p => p.id === pending?.actorId)?.name ?? '???';
+  const targetName = gs.players.find(p => p.id === pending?.targetId)?.name ?? '???';
+  const currentName = gs.players[gs.currentPlayerIndex].name;
+
+  let msg = '';
+  let accent = 'rgba(200,180,140,0.55)';
+
+  if (pending?.step === 'awaiting_shutdown') {
+    if (isActor) { msg = '❓ ถามเพื่อนว่ามีใครอยากใช้ Shutdown ไหม แล้วกดดำเนินการต่อ'; accent = '#e67e22'; }
+    else if (myHasShutdown) { msg = `⛔ ${actorName} เล่น ${pending.action.name} — คุณมี Shutdown ต้องการใช้ไหม?`; accent = '#c0392b'; }
+    else { msg = `รอ ${actorName} ดำเนินการ...`; }
+  } else if (pending?.step === 'awaiting_target' && isActor) {
+    msg = `🎯 เลือกเป้าหมายสำหรับ ${pending.action.name}`; accent = '#e67e22';
+  } else if (pending?.step === 'awaiting_clue_selection' && isActor) {
+    if (pending.action.type === 'SWAP' && !pending.selectedClueInstanceId) { msg = '🔄 SWAP — เลือก Clue ของคุณที่จะแลก'; accent = '#e67e22'; }
+    else if (pending.action.type === 'SWAP') { msg = `🔄 SWAP — เลือก Clue ของ ${targetName} (ไม่เห็นเนื้อหา)`; accent = '#e67e22'; }
+    else if (pending.action.type === 'SPY') { msg = `🔍 SPY — เลือก Clue ของ ${targetName} (ไม่เห็นเนื้อหา)`; accent = '#e67e22'; }
+    else if (pending.action.type === 'STEAL') { msg = `🫳 STEAL — เลือก Clue ของ ${targetName} (ไม่เห็นเนื้อหา)`; accent = '#e67e22'; }
+    else { msg = `เลือก Clue สำหรับ ${pending.action.name}`; accent = '#e67e22'; }
+  } else if (pending && !isActor && !isTarget) {
+    msg = `รอ ${actorName} ดำเนินการ...`;
+  } else if (isMyTurn && gs.turnPhase === 'draw') {
+    msg = '🎯 เทิร์นคุณ — กดจั่วการ์ดหรือเล่น Action'; accent = '#27ae60';
+  } else if (isMyTurn && gs.turnPhase === 'end' && state.lastDrawnCard) {
+    msg = '✨ ดูการ์ดที่ได้ แล้วกดจบเทิร์น'; accent = '#e67e22';
+  } else if (isMyTurn && gs.turnPhase === 'end') {
+    msg = '✓ ทำเสร็จแล้ว — กดจบเทิร์น'; accent = '#27ae60';
+  } else if (!isMyTurn) {
+    msg = `รอเทิร์นของ ${currentName}...`;
+  }
+
+  if (!msg) return null;
+  return (
+    <div style={{
+      padding: '8px 14px', borderRadius: 8, marginBottom: 12,
+      background: 'rgba(0,0,0,0.5)', border: `1px solid ${accent}50`,
+      textAlign: 'center', fontSize: '0.82rem', color: accent,
+      fontFamily: "'Cinzel', serif", letterSpacing: '0.03em', lineHeight: 1.5,
+    }}>
+      {msg}
+    </div>
+  );
+}
+
 // ─── Main hand view ──────────────────────────────────────────────────────────
 
 function MainHandView({ player }: { player: Player }) {
@@ -313,6 +367,7 @@ function MainHandView({ player }: { player: Player }) {
       </div>
 
       <div className="board-content" style={{ position: 'relative', zIndex: 1 }}>
+        <StatusBanner />
         {/* Clue hand */}
         <div style={gpanel}>
           <div style={gsec}>Clues ในมือ ({player.clueHand.length})</div>

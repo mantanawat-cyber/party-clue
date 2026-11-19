@@ -170,12 +170,38 @@ export default function BoardScreen() {
       </div>
 
       <div className="board-content" style={{ position: 'relative', zIndex: 1 }}>
-        {/* My turn banner */}
-        {isMyTurn && !pendingAction && (
-          <div style={{ background: 'rgba(10,30,10,0.8)', border: '1px solid rgba(80,160,80,0.4)', borderRadius: 10, padding: '12px 16px', textAlign: 'center' }}>
-            <span style={{ color: '#5cb85c', fontWeight: 700, fontFamily: "'Cinzel', serif" }}>🎯 ถึงตาคุณแล้ว!</span>
-          </div>
-        )}
+        {/* Status banner */}
+        {(() => {
+          const pa = pendingAction;
+          const myHasShutdown = gs.players.find(p => p.id === state.myPlayerId)?.actionHand.some(a => a.type === 'SHUTDOWN') ?? false;
+          const actorName = gs.players.find(p => p.id === pa?.actorId)?.name ?? '???';
+          const iAm = (id?: string) => id === state.myPlayerId;
+          let msg = ''; let accent = '#5cb85c';
+          if (pa?.step === 'awaiting_shutdown') {
+            if (iAm(pa.actorId)) { msg = '❓ ถามเพื่อนว่าต้องการ Shutdown ไหม — เปิดมือเพื่อดำเนินการต่อ'; accent = '#e67e22'; }
+            else if (myHasShutdown) { msg = `⛔ ${actorName} เล่น ${pa.action.name} — คุณมี Shutdown! เปิดมือเพื่อใช้`; accent = '#c0392b'; }
+            else { msg = `รอ ${actorName} ดำเนินการ...`; accent = 'rgba(200,180,140,0.5)'; }
+          } else if (pa?.step === 'awaiting_target' && iAm(pa.actorId)) {
+            msg = `🎯 เปิดมือเพื่อเลือกเป้าหมายของ ${pa.action.name}`; accent = '#e67e22';
+          } else if (pa?.step === 'awaiting_clue_selection' && iAm(pa.actorId)) {
+            msg = `เปิดมือเพื่อเลือก Clue สำหรับ ${pa.action.name}`; accent = '#e67e22';
+          } else if (pa?.step === 'awaiting_discard_choice' && iAm(pa.targetId)) {
+            msg = `⚠️ ${actorName} ใช้ Discard — เปิดมือเพื่อเลือกว่าจะทิ้งอะไร`; accent = '#c0392b';
+          } else if (pa?.step === 'awaiting_investigate_keep' && iAm(pa.actorId)) {
+            msg = '🔎 เปิดมือเพื่อเลือก Clue จาก Investigate'; accent = '#e67e22';
+          } else if (pa && !iAm(pa.actorId) && !iAm(pa.targetId)) {
+            msg = `รอ ${actorName} ดำเนินการ...`; accent = 'rgba(200,180,140,0.5)';
+          } else if (isMyTurn) {
+            msg = '🎯 ถึงตาคุณแล้ว — เปิดมือเพื่อเล่น'; accent = '#5cb85c';
+          } else {
+            msg = `รอเทิร์นของ ${currentTurnPlayer.name}...`; accent = 'rgba(200,180,140,0.5)';
+          }
+          return (
+            <div style={{ background: 'rgba(0,0,0,0.6)', border: `1px solid ${accent}50`, borderRadius: 10, padding: '10px 16px', textAlign: 'center', marginBottom: 4 }}>
+              <span style={{ color: accent, fontWeight: 700, fontFamily: "'Cinzel', serif", fontSize: '0.85rem' }}>{msg}</span>
+            </div>
+          );
+        })()}
 
         {/* Waiting banner */}
         {!isMyTurn && !needsMyResponse && (
