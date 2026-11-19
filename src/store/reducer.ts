@@ -247,8 +247,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
 
       if (pending.action.type === 'SPY') {
         const gs = resolveAction(state.gameState);
-        const spyLog = [...gs.log].reverse().find((l) => l.message.includes('[SPY]'));
-        const spyReveal = spyLog ? spyLog.message.split(': ').slice(2).join(': ').replace(/"/g, '') : null;
+        const spyReveal = gs.spyResult ?? null;
         const gsEnd = gs.pendingAction === null ? { ...gs, turnPhase: 'end' as const } : gs;
         return { ...state, gameState: gsEnd, spyReveal };
       }

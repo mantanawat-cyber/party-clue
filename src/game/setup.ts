@@ -83,6 +83,7 @@ export function setupGame(
     currentQuestion: question,
     winner: null,
     pendingAction: null,
+    spyResult: null,
     hostJudgePending: null,
     pendingGuessIsAnonymous: false,
     pendingPenalty: null,

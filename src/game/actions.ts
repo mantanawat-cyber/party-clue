@@ -185,8 +185,7 @@ function resolveSpy(state: GameState, pending: PendingAction): GameState {
   const clue = target.clueHand.find((c) => c.instanceId === clueId && c.status === 'normal');
   if (!clue) return addLog(state, `Spy ล้มเหลว: ไม่พบ Normal Clue ที่เลือก`);
 
-  // Spy result is stored in log — UI reads latest log to show actor
-  return addLog(state, `🔍 [SPY] ${actor.name} สอดแนม ${target.name}: "${clue.content}"`);
+  return addLog({ ...state, spyResult: clue.content }, `🔍 ${actor.name} สอดแนม ${target.name}`);
 }
 
 function resolveDecode(state: GameState, pending: PendingAction): GameState {
@@ -201,8 +200,7 @@ function resolveDecode(state: GameState, pending: PendingAction): GameState {
     ),
   }));
 
-  const clue = actor.clueHand.find((c) => c.instanceId === clueId);
-  return addLog(newState, `🔓 ${actor.name} Decode: "${clue?.content ?? ''}"`);
+  return addLog(newState, `🔓 ${actor.name} ปลดล็อก Clue 1 ใบ`);
 }
 
 function resolveEncode(state: GameState, pending: PendingAction): GameState {
@@ -375,7 +373,7 @@ export function applyInvestigateKeep(state: GameState, keepInstanceId: string): 
     newState = { ...newState, clueDeck: putUnderDeck(newState.clueDeck, c) };
   }
 
-  return addLog(newState, `${actor.name} Investigate เก็บ Clue: "${kept.content}"`);
+  return addLog(newState, `${actor.name} Investigate เก็บ Clue 1 ใบ`);
 }
 
 // Set shuffle picks (called per player as they submit their pick)

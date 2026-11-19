@@ -129,6 +129,7 @@ export interface GameState {
   currentQuestion: Question | null;
   winner: string | null; // playerId
   pendingAction: PendingAction | null;
+  spyResult: string | null; // visible only to actor via AppState.spyReveal, cleared on endTurn
   hostJudgePending: string | null; // playerId awaiting host judgment (manual mode)
   pendingGuessIsAnonymous: boolean; // whether the pending manual-judge guess was anonymous
   pendingPenalty: string | null; // playerId who must pick a clue as penalty
