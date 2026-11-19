@@ -517,6 +517,8 @@ function ClueSelectView() {
     if (pending.action.type === 'SPY') return c.status === 'normal';
     if (pending.action.type === 'DECODE') return c.status === 'locked';
     if (pending.action.type === 'ENCODE') return c.status === 'normal';
+    if (pending.action.type === 'SWAP') return c.status !== 'public';
+    if (pending.action.type === 'STEAL') return c.status !== 'public';
     return true;
   });
 
