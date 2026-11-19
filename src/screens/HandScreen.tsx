@@ -188,10 +188,11 @@ export default function HandScreen() {
   if (state.spyReveal) return <SpyRevealView content={state.spyReveal} />;
   if (state.guessPhase === 'pending_penalty' || gs.pendingPenalty === state.myPlayerId) return <PenaltyView player={player} />;
   if (gs.hostJudgePending && state.isHost) return <ManualJudgeView />;
-  if (pending?.step === 'awaiting_investigate_keep') return <InvestigateView />;
-  if (pending?.step === 'awaiting_discard_choice') return <DiscardChoiceView />;
-
   const isActor = pending?.actorId === state.myPlayerId;
+  const isTarget = pending?.targetId === state.myPlayerId;
+
+  if (pending?.step === 'awaiting_investigate_keep' && isActor) return <InvestigateView />;
+  if (pending?.step === 'awaiting_discard_choice' && isTarget) return <DiscardChoiceView />;
 
   if (pending?.step === 'awaiting_shutdown') return <ShutdownView />;
   if (pending?.step === 'awaiting_target' && isActor) return <TargetSelectView />;
