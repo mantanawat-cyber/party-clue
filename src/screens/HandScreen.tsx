@@ -358,9 +358,27 @@ function MainHandView({ player }: { player: Player }) {
           {/* My turn — draw phase: choose action */}
           {isMyTurn && !isBlackedOut && isDrawPhase && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'DRAW_ACTION' })}>
-                🃏 จั่ว Action 1 ใบ
-              </GothicButton>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                <style>{`@keyframes cardPulse { 0%,100%{box-shadow:0 0 12px rgba(200,160,60,0.3),0 4px 20px rgba(0,0,0,0.6)} 50%{box-shadow:0 0 24px rgba(200,160,60,0.6),0 4px 24px rgba(0,0,0,0.7)} }`}</style>
+                <div
+                  onClick={() => dispatch({ type: 'DRAW_ACTION' })}
+                  style={{
+                    width: 110, aspectRatio: '3 / 4.2', cursor: 'pointer',
+                    borderRadius: 10, overflow: 'hidden',
+                    animation: 'cardPulse 2s ease-in-out infinite',
+                    transition: 'transform 0.15s ease',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.06) translateY(-4px)')}
+                  onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+                  onTouchStart={e => (e.currentTarget.style.transform = 'scale(1.06) translateY(-4px)')}
+                  onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}
+                >
+                  <img src="/cards/card-back.png" alt="จั่วการ์ด" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                </div>
+                <div style={{ fontSize: '0.78rem', color: 'rgba(200,180,120,0.6)', letterSpacing: '0.1em', fontFamily: "'Cinzel', serif" }}>
+                  กดเพื่อจั่วการ์ด
+                </div>
+              </div>
               {player.actionHand.length > 0 && (
                 <>
                   <div style={{ borderTop: '1px solid rgba(120,80,40,0.3)', paddingTop: 12 }}>
