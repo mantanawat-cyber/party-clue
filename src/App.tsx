@@ -9,6 +9,7 @@ import ClaimScreen from './screens/ClaimScreen';
 import BoardScreen from './screens/BoardScreen';
 import HandScreen from './screens/HandScreen';
 import GameOverScreen from './screens/GameOverScreen';
+import HowToPlayScreen from './screens/HowToPlayScreen';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state = { error: null };
@@ -59,8 +60,9 @@ function AppInner() {
     case 'home':     return <HomeScreen />;
     case 'setup':    return <SetupScreen />;
     case 'join':     return <JoinScreen />;
-    case 'lobby':    return <LobbyScreen />;
-    case 'claim':    return <ClaimScreen />;
+    case 'lobby':     return <LobbyScreen />;
+    case 'howtoplay': return <HowToPlayScreen />;
+    case 'claim':     return <ClaimScreen />;
     case 'board':    return <BoardScreen />;
     case 'hand':     return <HandScreen />;
     case 'gameover': return <GameOverScreen />;

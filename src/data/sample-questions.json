@@ -5,6 +5,7 @@
   "questions": [
     {
       "id": "q-anime-001",
+      "question": "ตัวละครนี้คือใคร?",
       "answer": "นารูโตะ อุซุมากิ",
       "acceptedAnswers": ["นารูโตะ", "naruto", "นารูโตะ อุซุมากิ", "uzumaki naruto"],
       "category": "Naruto",
@@ -23,6 +24,7 @@
     },
     {
       "id": "q-anime-002",
+      "question": "ตัวละครนี้คือใคร?",
       "answer": "ไลท์ ยางามิ",
       "acceptedAnswers": ["ไลท์", "light", "light yagami", "ไลท์ ยางามิ", "คิระ", "kira"],
       "category": "Death Note",
@@ -41,6 +43,7 @@
     },
     {
       "id": "q-anime-003",
+      "question": "ตัวละครนี้คือใคร?",
       "answer": "ลัฟฟี่",
       "acceptedAnswers": ["ลัฟฟี่", "luffy", "monkey d luffy", "มังกี้ ดี. ลัฟฟี่"],
       "category": "One Piece",

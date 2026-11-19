@@ -23,6 +23,7 @@ export type Screen =
   | 'setup'      // host: pick question
   | 'join'       // enter room code
   | 'lobby'      // waiting room (all players)
+  | 'howtoplay'  // how to play guide
   | 'claim'      // legacy fallback
   | 'board'      // public game board
   | 'hand'       // private hand
@@ -95,7 +96,9 @@ export type AppAction =
   | { type: 'END_TURN' }
   | { type: 'REDRAW_ACTION'; discardInstanceId: string }
   | { type: 'CLEAR_SPY_REVEAL' }
-  | { type: 'CANCEL_ACTION' };
+  | { type: 'CANCEL_ACTION' }
+  | { type: 'GO_HOWTOPLAY' }
+  | { type: 'GO_BACK_HOWTOPLAY' };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -352,6 +355,12 @@ export function appReducer(state: AppState, action: AppAction): AppState {
 
     case 'CLEAR_SPY_REVEAL':
       return { ...state, spyReveal: null };
+
+    case 'GO_HOWTOPLAY':
+      return { ...state, screen: 'howtoplay' };
+
+    case 'GO_BACK_HOWTOPLAY':
+      return { ...state, screen: state.gameState ? 'lobby' : 'home' };
 
     case 'CANCEL_ACTION': {
       if (!state.gameState) return state;

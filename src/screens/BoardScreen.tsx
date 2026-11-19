@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { useGame } from '../store/GameContext';
 import type { ClueInstance } from '../models';
 
@@ -28,19 +29,72 @@ function ClueCard({ clue }: { clue: ClueInstance }) {
   );
 }
 
+function ActionToast({ message, onClose }: { message: string; onClose: () => void }) {
+  useEffect(() => {
+    const t = setTimeout(onClose, 4000);
+    return () => clearTimeout(t);
+  }, [onClose]);
+
+  return (
+    <div style={{
+      position: 'fixed', top: 60, left: '50%', transform: 'translateX(-50%)',
+      zIndex: 100, maxWidth: 'calc(100vw - 32px)', width: 340,
+      background: 'linear-gradient(135deg, rgba(80,20,0,0.97), rgba(50,10,0,0.98))',
+      border: '1px solid rgba(220,100,30,0.6)',
+      borderRadius: 10, padding: '12px 16px',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.8), 0 0 0 1px rgba(220,100,30,0.2)',
+      display: 'flex', alignItems: 'flex-start', gap: 10,
+      animation: 'slideDown 0.25s ease',
+    }}>
+      <style>{`@keyframes slideDown { from { opacity:0; transform:translateX(-50%) translateY(-12px) } to { opacity:1; transform:translateX(-50%) translateY(0) } }`}</style>
+      <span style={{ fontSize: '1.2rem', flexShrink: 0, marginTop: 1 }}>⚠️</span>
+      <span style={{ flex: 1, color: '#f5c97a', fontSize: '0.9rem', lineHeight: 1.4, fontFamily: "'Cinzel', serif" }}>{message}</span>
+      <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: 'rgba(220,180,120,0.5)', cursor: 'pointer', fontSize: '1rem', padding: '0 0 0 4px', flexShrink: 0 }}>✕</button>
+    </div>
+  );
+}
+
 export default function BoardScreen() {
   const { state, dispatch } = useGame();
   const gs = state.gameState;
+  const [toast, setToast] = useState<string | null>(null);
+  const seenActionRef = useRef<string | null>(null);
+
+  const pending = gs?.pendingAction ?? null;
+
+  useEffect(() => {
+    if (!pending || !state.myPlayerId || !gs) return;
+
+    const actionKey = pending.action.instanceId;
+    if (seenActionRef.current === actionKey) return;
+
+    const isTarget = pending.targetId === state.myPlayerId;
+    const canShutdown =
+      pending.step === 'awaiting_shutdown' &&
+      pending.actorId !== state.myPlayerId &&
+      gs.players.find(p => p.id === state.myPlayerId)?.actionHand.some(a => a.type === 'SHUTDOWN');
+
+    if (isTarget || canShutdown) {
+      seenActionRef.current = actionKey;
+      const actor = gs.players.find(p => p.id === pending.actorId)?.name ?? '???';
+      const msg = isTarget
+        ? `${actor} เล่น ${pending.action.name} ใส่คุณ!`
+        : `${actor} เล่น ${pending.action.name} — กด Shutdown ได้!`;
+      setToast(msg);
+      try { navigator.vibrate?.([200, 80, 200]); } catch {}
+    }
+  }, [pending?.action.instanceId]);
+
   if (!gs) return null;
 
   const currentTurnPlayer = gs.players[gs.currentPlayerIndex];
   const isMyTurn = state.myPlayerId === currentTurnPlayer.id;
 
-  const pending = gs.pendingAction;
-  const needsMyResponse = (pending && (
-    pending.actorId === state.myPlayerId ||
-    pending.targetId === state.myPlayerId ||
-    (pending.step === 'awaiting_shutdown' &&
+  const pendingAction = gs.pendingAction;
+  const needsMyResponse = (pendingAction && (
+    pendingAction.actorId === state.myPlayerId ||
+    pendingAction.targetId === state.myPlayerId ||
+    (pendingAction.step === 'awaiting_shutdown' &&
       gs.players.find(p => p.id === state.myPlayerId)?.actionHand.some(a => a.type === 'SHUTDOWN'))
   )) || (gs.hostJudgePending && state.isHost) || gs.pendingPenalty === state.myPlayerId;
 
@@ -52,6 +106,7 @@ export default function BoardScreen() {
       backgroundAttachment: 'fixed',
     }}>
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', pointerEvents: 'none', zIndex: 0 }} />
+      {toast && <ActionToast message={toast} onClose={() => setToast(null)} />}
 
       {/* Header */}
       <div className="board-header" style={{
@@ -93,7 +148,7 @@ export default function BoardScreen() {
 
       <div className="board-content" style={{ position: 'relative', zIndex: 1 }}>
         {/* My turn banner */}
-        {isMyTurn && !pending && (
+        {isMyTurn && !pendingAction && (
           <div style={{ background: 'rgba(10,30,10,0.8)', border: '1px solid rgba(80,160,80,0.4)', borderRadius: 10, padding: '12px 16px', textAlign: 'center' }}>
             <span style={{ color: '#5cb85c', fontWeight: 700, fontFamily: "'Cinzel', serif" }}>🎯 ถึงตาคุณแล้ว!</span>
           </div>
@@ -110,6 +165,16 @@ export default function BoardScreen() {
         {needsMyResponse && (
           <div style={{ background: 'rgba(80,20,0,0.6)', border: '1px solid rgba(200,100,30,0.5)', borderRadius: 10, padding: '12px 16px', textAlign: 'center' }}>
             <span style={{ color: '#f59e0b', fontWeight: 700 }}>⚠️ คุณต้องตอบสนองก่อน!</span>
+          </div>
+        )}
+
+        {/* Question */}
+        {gs.currentQuestion?.question && (
+          <div style={{ ...gpanel, textAlign: 'center' }}>
+            <div style={gsec}>คำถาม</div>
+            <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#e8d5b0', fontFamily: "'Cinzel', serif" }}>
+              {gs.currentQuestion.question}
+            </div>
           </div>
         )}
 

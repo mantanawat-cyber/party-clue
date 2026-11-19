@@ -69,9 +69,9 @@ const headerStyle: React.CSSProperties = {
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function ClueCard({ clue, onClick, selected }: { clue: ClueInstance; onClick?: () => void; selected?: boolean }) {
+function ClueCard({ clue, onClick, selected, blind }: { clue: ClueInstance; onClick?: () => void; selected?: boolean; blind?: boolean }) {
   const isLocked = clue.status === 'locked';
-  const imgSrc = isLocked ? '/cards/clue-locked.png' : '/cards/clue-normal.png';
+  const imgSrc = blind ? '/cards/card-back.png' : (isLocked ? '/cards/clue-locked.png' : '/cards/clue-normal.png');
   const text = isLocked ? 'ต้องใช้การ์ด Decode เพื่อปลดล็อก' : clue.content;
 
   return (
@@ -91,15 +91,17 @@ function ClueCard({ clue, onClick, selected }: { clue: ClueInstance; onClick?: (
         style={{ width: '100%', height: '100%', objectFit: 'fill', borderRadius: 8, display: 'block' }}
         draggable={false}
       />
-      <div style={{
-        position: 'absolute', top: '56%', left: '9%', right: '9%', height: '32%',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center',
-        overflow: 'hidden', fontSize: clueTextSize(text.length), lineHeight: 1.3,
-        color: isLocked ? '#8b5cf6' : '#3b2000', fontWeight: isLocked ? 500 : 600,
-        padding: '2px 4px', wordBreak: 'break-word',
-      }}>
-        {text}
-      </div>
+      {!blind && (
+        <div style={{
+          position: 'absolute', top: '63%', left: '10%', right: '10%', height: '23%',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center',
+          overflow: 'hidden', fontSize: clueTextSize(text.length), lineHeight: 1.3,
+          color: isLocked ? '#8b5cf6' : '#3b2000', fontWeight: isLocked ? 500 : 600,
+          padding: '2px 4px', wordBreak: 'break-word',
+        }}>
+          {text}
+        </div>
+      )}
     </div>
   );
 }
@@ -230,6 +232,14 @@ function MainHandView({ player }: { player: Player }) {
           <button style={{ background: 'transparent', border: 'none', color: 'rgba(200,180,140,0.7)', fontSize: '1.1rem', cursor: 'pointer', padding: '4px 8px' }} onClick={() => setShowGuess(false)}>✕</button>
         </div>
         <div className="board-content" style={{ position: 'relative', zIndex: 1 }}>
+          {gs.currentQuestion?.question && (
+            <div style={{ ...gpanel, textAlign: 'center' }}>
+              <div style={gsec}>คำถาม</div>
+              <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#e8d5b0', fontFamily: "'Cinzel', serif" }}>
+                {gs.currentQuestion.question}
+              </div>
+            </div>
+          )}
           <div style={gpanel}>
             <div style={gsec}>Public Clues ที่เปิดเผยแล้ว</div>
             <div className="card-grid" style={{ marginBottom: 12 }}>
@@ -516,7 +526,7 @@ function ClueSelectView() {
       ) : (
         <div className="card-grid" style={{ marginBottom: 12 }}>
           {eligible.map(c => (
-            <ClueCard key={c.instanceId} clue={c} onClick={() => dispatch({ type: 'SELECT_CLUE', clueInstanceId: c.instanceId })} />
+            <ClueCard key={c.instanceId} clue={c} blind={pending.action.type === 'STEAL'} onClick={() => dispatch({ type: 'SELECT_CLUE', clueInstanceId: c.instanceId })} />
           ))}
         </div>
       )}

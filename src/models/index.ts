@@ -55,6 +55,7 @@ export interface ActionInstance {
 
 export interface Question {
   id: string;
+  question: string;
   answer: string;
   acceptedAnswers: string[];
   category?: string;

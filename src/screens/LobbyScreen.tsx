@@ -93,6 +93,12 @@ export default function LobbyScreen() {
             ← ออกจากห้อง
           </GothicButton>
         </div>
+
+        <div style={{ marginTop: 12 }}>
+          <GothicButton variant="ghost" fullWidth onClick={() => dispatch({ type: 'GO_HOWTOPLAY' })}>
+            📖 วิธีเล่น
+          </GothicButton>
+        </div>
       </GothicPanel>
     </GothicScreen>
   );
