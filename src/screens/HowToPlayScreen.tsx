@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useGame } from '../store/GameContext';
 import { GothicScreen, GothicButton } from '../components/GothicLayout';
 
@@ -39,6 +40,11 @@ const h2: React.CSSProperties = {
 
 export default function HowToPlayScreen() {
   const { dispatch } = useGame();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    return () => { window.scrollTo(0, 0); };
+  }, []);
 
   return (
     <GothicScreen>
