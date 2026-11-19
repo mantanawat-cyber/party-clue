@@ -24,7 +24,7 @@ export function drawActionPhase(state: GameState): GameState {
       );
       return addLog(
         { ...state, players: updatedPlayers, clueDeck: remainingClueDeck, drawOrder: remainingOrder, turnPhase: 'end' },
-        `${player.name} จั่วได้ Clue: "${drawn.content}"`
+        `${player.name} จั่ว Clue 1 ใบ`
       );
     }
   }
@@ -50,7 +50,7 @@ export function drawActionPhase(state: GameState): GameState {
 
   return addLog(
     { ...state, players: updatedPlayers, actionDeck: remainingActionDeck, drawOrder: remainingOrder, turnPhase: 'end' },
-    `${player.name} จั่ว Action: ${drawn.name}`
+    `${player.name} จั่ว Action 1 ใบ`
   );
 }
 
