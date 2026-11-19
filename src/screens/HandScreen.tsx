@@ -551,7 +551,6 @@ function ShutdownView() {
   const [shutdownWho, setShutdownWho] = useState<string | null>(null);
 
   const isActor = state.myPlayerId === pending.actorId;
-  const others = gs.players.filter(p => p.id !== pending.actorId);
   const actor = gs.players.find(p => p.id === pending.actorId)!;
   const myShutdownCards = gs.players.find(p => p.id === state.myPlayerId)?.actionHand.filter(a => a.type === 'SHUTDOWN') ?? [];
 
@@ -570,17 +569,10 @@ function ShutdownView() {
     );
   }
 
-  // Actor: sees all shutdown options + proceed button
+  // Actor: ไม่แสดงว่าใครมี Shutdown (ไพ่ลับ) — แค่ถามและรอ แล้วกดดำเนินการต่อ
   if (isActor) {
     return (
-      <SubView title={`⚠️ ${pending.action.name}`} subtitle="มีใครต้องการใช้ Shutdown ไหม?">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
-          {others.filter(p => p.actionHand.some(a => a.type === 'SHUTDOWN')).map(p => (
-            <GothicButton key={p.id} variant="primary" fullWidth onClick={() => setShutdownWho(p.id)}>
-              ⛔ {p.name} ใช้ Shutdown
-            </GothicButton>
-          ))}
-        </div>
+      <SubView title={`⚠️ ${pending.action.name}`} subtitle="ถามเพื่อนว่ามีใครต้องการใช้ Shutdown ไหม?">
         <GothicButton variant="primary" fullWidth onClick={() => dispatch({ type: 'SKIP_SHUTDOWN' })}>
           {pending.action.type === 'SPY' ? 'เปิดเผยผล SPY →' : 'ไม่มี — ดำเนินการต่อ ✓'}
         </GothicButton>
