@@ -526,7 +526,7 @@ function ClueSelectView() {
       ) : (
         <div className="card-grid" style={{ marginBottom: 12 }}>
           {eligible.map(c => (
-            <ClueCard key={c.instanceId} clue={c} blind={pending.action.type === 'STEAL'} onClick={() => dispatch({ type: 'SELECT_CLUE', clueInstanceId: c.instanceId })} />
+            <ClueCard key={c.instanceId} clue={c} blind={pending.action.type === 'STEAL' || pending.action.type === 'SPY'} onClick={() => dispatch({ type: 'SELECT_CLUE', clueInstanceId: c.instanceId })} />
           ))}
         </div>
       )}

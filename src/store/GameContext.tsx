@@ -8,10 +8,9 @@ import type { GameState } from '../models';
 // START_GAME is excluded — SetupScreen already writes to Firebase before dispatching
 const FIREBASE_WRITE_ACTIONS = new Set([
   'CLAIM_PLAYER',
-  'OPEN_HAND',
   'DRAW_ACTION', 'PLAY_ACTION', 'SET_TARGET', 'SELECT_CLUE',
   'SKIP_SHUTDOWN', 'USE_SHUTDOWN', 'APPLY_DISCARD_CHOICE', 'KEEP_INVESTIGATE',
-  'SET_SHUFFLE_PICK', 'SUBMIT_GUESS', 'APPLY_PENALTY', 'JUDGE_ANSWER',
+  'SUBMIT_GUESS', 'APPLY_PENALTY', 'JUDGE_ANSWER',
   'END_TURN', 'REDRAW_ACTION', 'CANCEL_ACTION',
 ]);
 
