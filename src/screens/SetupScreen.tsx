@@ -5,16 +5,19 @@ import { reserveRoom, joinLobby, getOrCreatePlayerId } from '../firebase/room';
 import { GothicScreen, GothicHeader, GothicPanel, GothicInput, GothicButton } from '../components/GothicLayout';
 import animeData from '../data/sample-questions.json';
 import homeData from '../data/home-questions.json';
+import seaData from '../data/sea-questions.json';
 
 const QUESTION_SETS = (() => {
   try {
     const anime = validateQuestionSet(animeData);
     const home = validateQuestionSet(homeData);
-    const all = { ...anime, id: 'all', name: 'ทั้งหมด (สุ่มจากทุกชุด)', questions: [...anime.questions, ...home.questions] };
+    const sea = validateQuestionSet(seaData);
+    const all = { ...anime, id: 'all', name: 'ทั้งหมด (สุ่มจากทุกชุด)', questions: [...anime.questions, ...home.questions, ...sea.questions] };
     return [
       { key: 'all',   label: '🎲 สุ่มทั้งหมด',         desc: `${all.questions.length} ข้อ`,    set: all },
       { key: 'anime', label: '🎌 ตัวละครอนิเมะ',        desc: `${anime.questions.length} ข้อ`, set: anime },
       { key: 'home',  label: '🏠 ของใช้ภายในบ้าน',      desc: `${home.questions.length} ข้อ`,  set: home },
+      { key: 'sea',   label: '🐠 สัตว์ในทะเล',          desc: `${sea.questions.length} ข้อ`,   set: sea },
     ];
   } catch { return []; }
 })();
