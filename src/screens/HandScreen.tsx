@@ -83,8 +83,10 @@ function ClueCard({ clue, onClick, selected, blind }: { clue: ClueInstance; onCl
         outline: selected ? '3px solid #c0392b' : 'none', outlineOffset: 2,
         transition: 'transform 0.15s, outline 0.1s',
         transform: selected ? 'scale(1.04)' : undefined, flexShrink: 0,
+        animation: onClick && !selected ? 'cluePulse 2s ease-in-out infinite' : undefined,
       }}
     >
+      {onClick && !selected && <style>{`@keyframes cluePulse { 0%,100%{box-shadow:0 0 8px rgba(200,168,74,0.2),0 4px 16px rgba(0,0,0,0.5)} 50%{box-shadow:0 0 20px rgba(200,168,74,0.55),0 0 32px rgba(200,168,74,0.2),0 4px 20px rgba(0,0,0,0.6)} }`}</style>}
       <img
         src={imgSrc}
         alt={isLocked ? 'Locked Clue' : 'Normal Clue'}

@@ -290,6 +290,10 @@ export default function BoardScreen() {
         </div>
 
         {/* Open hand button — always visible; urgent style when action needed */}
+        <style>{`
+          @keyframes handBtnPulse { 0%,100%{box-shadow:0 0 12px rgba(180,40,30,0.4),inset 0 1px 0 rgba(255,180,160,0.15)} 50%{box-shadow:0 0 28px rgba(210,50,30,0.7),0 0 44px rgba(200,40,20,0.25),inset 0 1px 0 rgba(255,180,160,0.15)} }
+          @keyframes handBtnPulseUrgent { 0%,100%{box-shadow:0 0 14px rgba(200,40,30,0.5),inset 0 1px 0 rgba(255,180,160,0.15)} 50%{box-shadow:0 0 36px rgba(220,50,30,0.85),0 0 56px rgba(210,40,20,0.35),inset 0 1px 0 rgba(255,180,160,0.2)} }
+        `}</style>
         <button
           onClick={() => dispatch({ type: 'OPEN_HAND' })}
           style={{
@@ -299,11 +303,11 @@ export default function BoardScreen() {
             ...(needsMyResponse ? {
               background: 'linear-gradient(135deg, #8b1a1a 0%, #c0392b 60%, #962020 100%)',
               color: '#f5e6b8', border: '1px solid rgba(200,80,60,0.5)',
-              boxShadow: '0 0 12px rgba(180,40,30,0.4), inset 0 1px 0 rgba(255,180,160,0.15)',
+              animation: 'handBtnPulseUrgent 1.2s ease-in-out infinite',
             } : isMyTurn ? {
               background: 'linear-gradient(135deg, #8b1a1a 0%, #c0392b 60%, #962020 100%)',
               color: '#f5e6b8', border: '1px solid rgba(200,80,60,0.5)',
-              boxShadow: '0 0 12px rgba(180,40,30,0.4), inset 0 1px 0 rgba(255,180,160,0.15)',
+              animation: 'handBtnPulse 2s ease-in-out infinite',
             } : {
               background: 'rgba(255,255,255,0.04)',
               color: 'rgba(200,180,140,0.7)', border: '1px solid rgba(120,80,40,0.3)',
