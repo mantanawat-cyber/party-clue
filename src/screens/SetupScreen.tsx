@@ -6,24 +6,32 @@ import { GothicScreen, GothicHeader, GothicPanel, GothicInput, GothicButton } fr
 import animeData from '../data/sample-questions.json';
 import homeData from '../data/home-questions.json';
 
-const questionSet = (() => {
+const QUESTION_SETS = (() => {
   try {
     const anime = validateQuestionSet(animeData);
     const home = validateQuestionSet(homeData);
-    return { ...anime, questions: [...anime.questions, ...home.questions] };
-  } catch { return null; }
+    const all = { ...anime, id: 'all', name: 'ทั้งหมด (สุ่มจากทุกชุด)', questions: [...anime.questions, ...home.questions] };
+    return [
+      { key: 'all',   label: '🎲 สุ่มทั้งหมด',         desc: `${all.questions.length} ข้อ`,    set: all },
+      { key: 'anime', label: '🎌 ตัวละครอนิเมะ',        desc: `${anime.questions.length} ข้อ`, set: anime },
+      { key: 'home',  label: '🏠 ของใช้ภายในบ้าน',      desc: `${home.questions.length} ข้อ`,  set: home },
+    ];
+  } catch { return []; }
 })();
 
 export default function SetupScreen() {
   const { state, dispatch } = useGame();
   const [name, setName] = useState(state.myName ?? '');
+  const [selectedSet, setSelectedSet] = useState<string>('all');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleCreate() {
     const trimmedName = name.trim();
     if (!trimmedName) { setError('กรุณากรอกชื่อก่อน'); return; }
-    const q = questionSet ? pickRandomQuestion(questionSet) : null;
+    const entry = QUESTION_SETS.find(s => s.key === selectedSet) ?? QUESTION_SETS[0];
+    if (!entry) { setError('ไม่พบชุดคำถาม'); return; }
+    const q = pickRandomQuestion(entry.set);
     if (!q) { setError('ไม่พบโจทย์'); return; }
 
     dispatch({ type: 'SET_MY_NAME', name: trimmedName });
@@ -44,6 +52,7 @@ export default function SetupScreen() {
     <GothicScreen>
       <GothicHeader subtitle="สร้างห้อง" />
       <GothicPanel>
+        {/* Name */}
         <div style={{ marginBottom: 16 }}>
           <label style={{ display: 'block', color: 'rgba(200,180,140,0.8)', fontSize: '0.8rem', letterSpacing: '0.1em', marginBottom: 6, fontFamily: "'Cinzel', serif" }}>
             ชื่อของคุณ
@@ -58,6 +67,39 @@ export default function SetupScreen() {
             onKeyDown={e => e.key === 'Enter' && handleCreate()}
             style={{ textAlign: 'center', fontSize: '1.1rem' }}
           />
+        </div>
+
+        {/* Question set selector */}
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ color: 'rgba(200,180,140,0.8)', fontSize: '0.8rem', letterSpacing: '0.1em', marginBottom: 8, fontFamily: "'Cinzel', serif" }}>
+            ชุดคำถาม
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {QUESTION_SETS.map(s => {
+              const active = selectedSet === s.key;
+              return (
+                <button
+                  key={s.key}
+                  onClick={() => setSelectedSet(s.key)}
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '10px 14px', borderRadius: 8, cursor: 'pointer', textAlign: 'left',
+                    fontFamily: "'Cinzel', serif",
+                    background: active ? 'rgba(192,57,43,0.18)' : 'rgba(255,255,255,0.03)',
+                    border: active ? '1px solid rgba(192,57,43,0.55)' : '1px solid rgba(120,80,40,0.3)',
+                    transition: 'background 0.15s, border-color 0.15s',
+                  }}
+                >
+                  <span style={{ fontSize: '0.9rem', color: active ? '#e8d5b0' : 'rgba(200,180,140,0.7)', fontWeight: active ? 700 : 400 }}>
+                    {s.label}
+                  </span>
+                  <span style={{ fontSize: '0.72rem', color: active ? 'rgba(200,100,80,0.9)' : 'rgba(200,180,140,0.4)', letterSpacing: '0.05em' }}>
+                    {s.desc}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {error && (
