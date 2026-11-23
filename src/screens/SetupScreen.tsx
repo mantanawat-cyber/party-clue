@@ -3,10 +3,15 @@ import { useGame } from '../store/GameContext';
 import { validateQuestionSet, pickRandomQuestion } from '../game';
 import { reserveRoom, joinLobby, getOrCreatePlayerId } from '../firebase/room';
 import { GothicScreen, GothicHeader, GothicPanel, GothicInput, GothicButton } from '../components/GothicLayout';
-import sampleData from '../data/sample-questions.json';
+import animeData from '../data/sample-questions.json';
+import homeData from '../data/home-questions.json';
 
 const questionSet = (() => {
-  try { return validateQuestionSet(sampleData); } catch { return null; }
+  try {
+    const anime = validateQuestionSet(animeData);
+    const home = validateQuestionSet(homeData);
+    return { ...anime, questions: [...anime.questions, ...home.questions] };
+  } catch { return null; }
 })();
 
 export default function SetupScreen() {
