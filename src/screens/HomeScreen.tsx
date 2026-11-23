@@ -74,6 +74,9 @@ export default function HomeScreen() {
         <GameButton onClick={() => dispatch({ type: 'GO_JOIN' })}>
           🔑 เข้าร่วมด้วย Code
         </GameButton>
+        <GameButton onClick={() => dispatch({ type: 'GO_HOWTOPLAY', from: 'home' })}>
+          📖 วิธีเล่น
+        </GameButton>
       </div>
     </div>
   );
